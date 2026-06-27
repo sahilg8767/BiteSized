@@ -1,0 +1,132 @@
+@import "./theme.css";
+
+.create-food-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-page);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+}
+
+.create-food-card {
+  width: min(100%, 34rem);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.create-food-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.create-food-kicker {
+  margin-bottom: 0.55rem;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.create-food-title {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.create-food-link {
+  color: var(--color-primary);
+  font-size: 0.94rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.create-food-link:hover {
+  text-decoration: underline;
+}
+
+.create-food-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.create-food-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.create-food-field label {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.create-food-field input,
+.create-food-field textarea {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.78rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+  resize: vertical;
+}
+
+.create-food-field input:focus,
+.create-food-field textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-focus);
+  background: var(--color-surface);
+}
+
+.create-food-status {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.create-food-status-success {
+  color: #16803c;
+}
+
+.create-food-status-error {
+  color: #c0352b;
+}
+
+.create-food-button {
+  min-height: 3rem;
+  margin-top: 0.25rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.create-food-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+@media (max-width: 520px) {
+  .create-food-page {
+    place-items: start center;
+  }
+
+  .create-food-header {
+    display: grid;
+  }
+}

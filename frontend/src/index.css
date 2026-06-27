@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Brand theme tokens (Tailwind v4 @theme -> utility classes like bg-brand) */
+@theme {
+  --color-brand: #ff3366;
+  --color-brand-dark: #e02753;
+  --color-ink: #0b0b0f;
+  --color-surface: #16161d;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: #f5f5f7;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbars on the reels feed while keeping scroll behaviour */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
