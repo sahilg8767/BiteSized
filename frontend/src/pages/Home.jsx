@@ -1,82 +1,45 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "../styles/home.css";
+import { Link } from "react-router-dom";
+import ReelFeed from "../components/ReelFeed";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const [status, setStatus] = useState("");
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const accountRole = localStorage.getItem("accountRole");
-  const isLoggedIn = Boolean(accountRole);
-
-  const handleLogout = async () => {
-    const logoutPath =
-      accountRole === "food-partner"
-        ? "/api/auth/food-partner/logout"
-        : "/api/auth/user/logout";
-
-    setIsLoggingOut(true);
-    setStatus("");
-
-    try {
-      const response = await fetch(`http://localhost:3000${logoutPath}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Logout failed");
-      }
-
-      localStorage.removeItem("accountRole");
-      setStatus(result.message || "Logged out successfully");
-      navigate("/user/login");
-    } catch (error) {
-      setStatus(error.message || "Unable to logout");
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
+  const { isAuthenticated, role, logout } = useAuth();
 
   return (
-    <main className="home-page">
-      <section className="home-shell">
-        <div>
-          <p className="home-kicker">Food Delivery</p>
-          <h1 className="home-title">Fresh orders, simple accounts.</h1>
-          <p className="home-subtitle">
-            Login or register to continue. After auth, the backend stores your token in a browser cookie.
-          </p>
-        </div>
-
-        <div className="home-actions">
-          {isLoggedIn ? (
-            <>
-              {accountRole === "food-partner" && (
-                <Link className="home-button home-button-secondary" to="/food/create">
-                  Create food
-                </Link>
-              )}
-              <button className="home-button" type="button" onClick={handleLogout} disabled={isLoggingOut}>
-                {isLoggingOut ? "Logging out..." : "Logout"}
-              </button>
-            </>
-          ) : (
-            <>
-              <Link className="home-button" to="/user/login">
-                User login
-              </Link>
-              <Link className="home-button home-button-secondary" to="/food-partner/login">
-                Partner login
-              </Link>
-            </>
+    <main className="relative">
+      {/* floating top bar */}
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 mx-auto flex max-w-md items-center justify-between p-4">
+        <h1 className="pointer-events-auto text-xl font-extrabold tracking-tight text-white drop-shadow">
+          Reel<span className="text-brand">o</span>
+        </h1>
+        <nav className="pointer-events-auto flex items-center gap-2 text-sm">
+          {role === "food-partner" && (
+            <Link
+              to="/food/create"
+              className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
+            >
+              + Upload
+            </Link>
           )}
-        </div>
+          {isAuthenticated ? (
+            <button
+              onClick={logout}
+              className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/user/login"
+              className="rounded-full bg-brand px-3 py-1.5 font-semibold text-white"
+            >
+              Login
+            </Link>
+          )}
+        </nav>
+      </header>
 
-        {status && <p className="home-status">{status}</p>}
-      </section>
+      <ReelFeed emptyText="No reels yet — check back soon!" />
     </main>
   );
 };

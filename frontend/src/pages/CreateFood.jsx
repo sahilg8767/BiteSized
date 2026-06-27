@@ -1,42 +1,35 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import "../styles/create-food.css";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/axios";
+
+const CATEGORIES = ["veg", "non-veg", "dessert", "beverage", "other"];
 
 const CreateFood = () => {
+  const navigate = useNavigate();
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [videoPreview, setVideoPreview] = useState("");
+
+  const handleVideoChange = (event) => {
+    const file = event.target.files?.[0];
+    setVideoPreview(file ? URL.createObjectURL(file) : "");
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const form = event.currentTarget;
-    const formData = new FormData(form);
+    const formData = new FormData(event.currentTarget);
 
     setIsSubmitting(true);
     setStatus({ type: "", message: "" });
 
     try {
-      const response = await fetch("http://localhost:3000/api/food", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Unable to create food");
-      }
-
-      setStatus({
-        type: "success",
-        message: result.message || "Food created successfully",
-      });
-      form.reset();
+      const { data } = await api.post("/api/food", formData);
+      setStatus({ type: "success", message: data.message || "Reel uploaded!" });
+      setTimeout(() => navigate("/"), 600);
     } catch (error) {
       setStatus({
         type: "error",
-        message: error.message || "Unable to connect to server",
+        message: error.response?.data?.message || "Unable to upload reel",
       });
     } finally {
       setIsSubmitting(false);
@@ -44,60 +37,94 @@ const CreateFood = () => {
   };
 
   return (
-    <main className="create-food-page">
-      <section className="create-food-card" aria-labelledby="create-food-title">
-        <div className="create-food-header">
+    <main className="min-h-screen bg-ink px-4 py-8 text-white">
+      <div className="mx-auto max-w-lg">
+        <div className="mb-6 flex items-center justify-between">
           <div>
-            <p className="create-food-kicker">Food partner</p>
-            <h1 className="create-food-title" id="create-food-title">
-              Create food
-            </h1>
+            <p className="text-sm text-brand">Food partner</p>
+            <h1 className="text-2xl font-bold">Upload a reel</h1>
           </div>
-          <Link className="create-food-link" to="/">
-            Home
+          <Link to="/" className="text-sm text-white/70 hover:text-white">
+            ← Home
           </Link>
         </div>
 
-        <form className="create-food-form" onSubmit={handleSubmit}>
-          <div className="create-food-field">
-            <label htmlFor="food-video">Video</label>
-            <input id="food-video" name="video" type="file" accept="video/*" required />
-          </div>
-
-          <div className="create-food-field">
-            <label htmlFor="food-name">Video title</label>
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl bg-surface p-6">
+          <Field label="Video">
             <input
-              id="food-name"
+              name="video"
+              type="file"
+              accept="video/*"
+              required
+              onChange={handleVideoChange}
+              className="block w-full text-sm text-white/80 file:mr-3 file:rounded-full file:border-0 file:bg-brand file:px-4 file:py-2 file:text-white"
+            />
+          </Field>
+
+          {videoPreview && (
+            <video
+              src={videoPreview}
+              controls
+              className="aspect-[9/16] max-h-72 w-full rounded-xl object-cover"
+            />
+          )}
+
+          <Field label="Dish name">
+            <input
               name="name"
               type="text"
-              placeholder="Enter food video title"
               required
+              placeholder="e.g. Cheese Burst Pizza"
+              className="input"
             />
+          </Field>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Price (₹)">
+              <input name="price" type="number" min="0" step="1" required placeholder="199" className="input" />
+            </Field>
+            <Field label="Category">
+              <select name="category" defaultValue="other" className="input">
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </Field>
           </div>
 
-          <div className="create-food-field">
-            <label htmlFor="food-description">Video description</label>
+          <Field label="Description">
             <textarea
-              id="food-description"
               name="description"
-              placeholder="Describe this food item"
-              rows="5"
+              rows="3"
+              placeholder="Tell people what makes this dish special"
+              className="input resize-none"
             />
-          </div>
+          </Field>
 
           {status.message && (
-            <p className={`create-food-status create-food-status-${status.type}`}>
+            <p className={status.type === "error" ? "text-sm text-red-400" : "text-sm text-green-400"}>
               {status.message}
             </p>
           )}
 
-          <button className="create-food-button" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Uploading..." : "Create food"}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full rounded-full bg-brand py-3 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
+          >
+            {isSubmitting ? "Uploading..." : "Upload reel"}
           </button>
         </form>
-      </section>
+      </div>
     </main>
   );
 };
+
+const Field = ({ label, children }) => (
+  <label className="block">
+    <span className="mb-1.5 block text-sm font-medium text-white/80">{label}</span>
+    {children}
+  </label>
+);
 
 export default CreateFood;
