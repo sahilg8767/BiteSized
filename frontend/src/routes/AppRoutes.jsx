@@ -4,6 +4,7 @@ import FoodPartnerLogin from '../pages/auth/FoodPartnerLogin'
 import FoodPartnerRegister from '../pages/auth/FoodPartnerRegister'
 import Home from '../pages/Home'
 import PartnerProfile from '../pages/PartnerProfile'
+import Saved from '../pages/Saved'
 import UserLogin from '../pages/auth/UserLogin'
 import UserRegister from '../pages/auth/UserRegister'
 import ProtectedRoute from '../components/ProtectedRoute'
@@ -20,6 +21,15 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute role='food-partner'>
               <CreateFood />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/saved'
+          element={
+            <ProtectedRoute role='user'>
+              <Saved />
             </ProtectedRoute>
           }
         />

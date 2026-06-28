@@ -21,6 +21,14 @@ const Home = () => {
               + Upload
             </Link>
           )}
+          {role === "user" && (
+            <Link
+              to="/saved"
+              className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
+            >
+              Saved
+            </Link>
+          )}
           {isAuthenticated ? (
             <button
               onClick={logout}

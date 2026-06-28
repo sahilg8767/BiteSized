@@ -1,10 +1,33 @@
 const foodModel = require('../models/food.model');
+const likeModel = require('../models/like.model');
+const saveModel = require('../models/save.model');
 const storageService = require('../services/storage.service');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { v4: uuid } = require('uuid');
 
 const PAGE_SIZE = 10;
+
+// Marks which of these reels the current user has liked/saved, so the feed can
+// render filled hearts/bookmarks. No-op for logged-out (optional auth) users.
+async function annotateEngagement(foodItems, userId) {
+    if (!userId || foodItems.length === 0) return foodItems;
+
+    const ids = foodItems.map((f) => f._id);
+    const [likes, saves] = await Promise.all([
+        likeModel.find({ user: userId, food: { $in: ids } }).select('food').lean(),
+        saveModel.find({ user: userId, food: { $in: ids } }).select('food').lean(),
+    ]);
+
+    const likedSet = new Set(likes.map((l) => String(l.food)));
+    const savedSet = new Set(saves.map((s) => String(s.food)));
+
+    return foodItems.map((f) => ({
+        ...f,
+        isLiked: likedSet.has(String(f._id)),
+        isSaved: savedSet.has(String(f._id)),
+    }));
+}
 
 // POST /api/food  (food partner only)
 const createFood = asyncHandler(async (req, res) => {
@@ -44,11 +67,13 @@ const getFoodItems = asyncHandler(async (req, res) => {
         foodModel.countDocuments({}),
     ]);
 
+    const annotated = await annotateEngagement(foodItems, req.user?._id);
+
     res.status(200).json({
         message: 'Food items fetched successfully',
         page,
         hasMore: page * PAGE_SIZE < total,
-        foodItems,
+        foodItems: annotated,
     });
 });
 
@@ -63,7 +88,8 @@ const getFoodById = asyncHandler(async (req, res) => {
         throw new ApiError(404, 'Food not found');
     }
 
-    res.status(200).json({ message: 'Food fetched successfully', food });
+    const [annotated] = await annotateEngagement([food], req.user?._id);
+    res.status(200).json({ message: 'Food fetched successfully', food: annotated });
 });
 
 // GET /api/food/partner/:id  -> a partner's reels (public profile feed)
@@ -71,11 +97,14 @@ const getFoodByPartner = asyncHandler(async (req, res) => {
     const foodItems = await foodModel
         .find({ foodPartner: req.params.id })
         .sort({ createdAt: -1 })
+        .populate('foodPartner', 'name address')
         .lean();
+
+    const annotated = await annotateEngagement(foodItems, req.user?._id);
 
     res.status(200).json({
         message: 'Partner food items fetched successfully',
-        foodItems,
+        foodItems: annotated,
     });
 });
 
