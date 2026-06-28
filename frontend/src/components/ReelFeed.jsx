@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import ReelCard from "./ReelCard";
 import CommentSheet from "./CommentSheet";
 
@@ -61,7 +62,13 @@ const ReelFeed = ({ fetcher = defaultFetcher, emptyText = "No reels yet", action
   const [commentFood, setCommentFood] = useState(null);
 
   const { isAuthenticated, role } = useAuth();
+  const { addItem } = useCart();
   const navigate = useNavigate();
+
+  const handleAddToCart = (food) => {
+    if (!requireUser()) return;
+    addItem(food);
+  };
 
   const patchReel = (id, patch) =>
     setReels((prev) => prev.map((r) => (r._id === id ? { ...r, ...patch } : r)));
@@ -117,7 +124,7 @@ const ReelFeed = ({ fetcher = defaultFetcher, emptyText = "No reels yet", action
           onLike={handleLike}
           onSave={handleSave}
           onComment={setCommentFood}
-          onAddToCart={actions.onAddToCart}
+          onAddToCart={handleAddToCart}
         />
       ))}
 
