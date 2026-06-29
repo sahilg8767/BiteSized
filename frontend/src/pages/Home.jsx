@@ -58,7 +58,8 @@ const Home = () => {
         </nav>
       </header>
 
-      <ReelFeed emptyText="No reels yet — check back soon!" />
+      {/* remount on login/logout so isLiked/isSaved reflect the current user */}
+      <ReelFeed key={isAuthenticated ? "auth" : "guest"} emptyText="No reels yet — check back soon!" />
 
       {/* floating cart button */}
       {totalItems > 0 && (

@@ -11,14 +11,27 @@ const { notFound, errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
 
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+// Allow one or more comma-separated client origins (e.g. prod + preview).
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim());
+const isProd = process.env.NODE_ENV === 'production';
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: CLIENT_URL,
+        origin(origin, callback) {
+            // non-browser clients (curl, server-to-server) send no origin
+            if (!origin) return callback(null, true);
+            // in dev, accept any localhost port so Vite can pick 5173/5174/etc.
+            if (!isProd && /^http:\/\/localhost:\d+$/.test(origin)) {
+                return callback(null, true);
+            }
+            if (allowedOrigins.includes(origin)) return callback(null, true);
+            return callback(new Error('Not allowed by CORS'));
+        },
         credentials: true,
     })
 );

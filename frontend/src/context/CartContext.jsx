@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext(null);
 const STORAGE_KEY = "reelo_cart";
@@ -19,6 +20,19 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  // Clear the cart when the user logs out (a cart belongs to one logged-in
+  // user). Only fire on a real authenticated -> logged-out transition, not on
+  // the initial auth bootstrap.
+  const { isAuthenticated, loading } = useAuth();
+  const wasAuthed = useRef(false);
+  useEffect(() => {
+    if (loading) return;
+    if (wasAuthed.current && !isAuthenticated) {
+      setItems([]);
+    }
+    wasAuthed.current = isAuthenticated;
+  }, [isAuthenticated, loading]);
 
   const partnerId = items[0]?.food?.foodPartner?._id || items[0]?.food?.foodPartner || null;
 
