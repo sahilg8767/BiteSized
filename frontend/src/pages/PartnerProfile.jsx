@@ -7,18 +7,14 @@ import ReelFeed from "../components/ReelFeed";
 // like name/address is enriched in Phase 4 with a dedicated endpoint.)
 const PartnerProfile = () => {
   const { id } = useParams();
-  const [partnerName, setPartnerName] = useState("");
+  const [partner, setPartner] = useState(null);
 
   const fetcher = () => api.get(`/api/food/partner/${id}`);
 
-  // grab a name from the first reel's populated partner if available
   useEffect(() => {
     api
-      .get(`/api/food/partner/${id}`)
-      .then(({ data }) => {
-        const first = data.foodItems?.[0];
-        if (first?.foodPartner?.name) setPartnerName(first.foodPartner.name);
-      })
+      .get(`/api/food-partner/${id}`)
+      .then(({ data }) => setPartner(data.foodPartner))
       .catch(() => {});
   }, [id]);
 
@@ -31,9 +27,9 @@ const PartnerProfile = () => {
         >
           ← Home
         </Link>
-        {partnerName && (
-          <span className="pointer-events-auto text-sm font-semibold text-white drop-shadow">
-            @{partnerName}
+        {partner?.name && (
+          <span className="pointer-events-auto max-w-[60%] truncate text-right text-sm font-semibold text-white drop-shadow">
+            @{partner.name}
           </span>
         )}
       </header>

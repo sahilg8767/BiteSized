@@ -4,6 +4,8 @@ import FoodPartnerLogin from '../pages/auth/FoodPartnerLogin'
 import FoodPartnerRegister from '../pages/auth/FoodPartnerRegister'
 import Home from '../pages/Home'
 import PartnerProfile from '../pages/PartnerProfile'
+import PartnerDashboard from '../pages/PartnerDashboard'
+import Search from '../pages/Search'
 import Saved from '../pages/Saved'
 import Cart from '../pages/Cart'
 import Checkout from '../pages/Checkout'
@@ -17,7 +19,17 @@ const AppRoutes = () => {
     <Router>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/search' element={<Search />} />
         <Route path='/partner/:id' element={<PartnerProfile />} />
+
+        <Route
+          path='/partner/dashboard'
+          element={
+            <ProtectedRoute role='food-partner'>
+              <PartnerDashboard />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path='/food/create'

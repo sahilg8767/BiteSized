@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaMagnifyingGlass } from "react-icons/fa6";
 import ReelFeed from "../components/ReelFeed";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -16,12 +16,19 @@ const Home = () => {
           Reel<span className="text-brand">o</span>
         </h1>
         <nav className="pointer-events-auto flex items-center gap-2 text-sm">
+          <Link
+            to="/search"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur"
+            aria-label="Search"
+          >
+            <FaMagnifyingGlass className="text-sm" />
+          </Link>
           {role === "food-partner" && (
             <Link
-              to="/food/create"
+              to="/partner/dashboard"
               className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
             >
-              + Upload
+              Dashboard
             </Link>
           )}
           {role === "user" && (

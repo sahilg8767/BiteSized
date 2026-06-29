@@ -25,7 +25,7 @@ const CreateFood = () => {
     try {
       const { data } = await api.post("/api/food", formData);
       setStatus({ type: "success", message: data.message || "Reel uploaded!" });
-      setTimeout(() => navigate("/"), 600);
+      setTimeout(() => navigate("/partner/dashboard"), 600);
     } catch (error) {
       setStatus({
         type: "error",
@@ -44,8 +44,8 @@ const CreateFood = () => {
             <p className="text-sm text-brand">Food partner</p>
             <h1 className="text-2xl font-bold">Upload a reel</h1>
           </div>
-          <Link to="/" className="text-sm text-white/70 hover:text-white">
-            ← Home
+          <Link to="/partner/dashboard" className="text-sm text-white/70 hover:text-white">
+            ← Dashboard
           </Link>
         </div>
 
@@ -65,7 +65,7 @@ const CreateFood = () => {
             <video
               src={videoPreview}
               controls
-              className="aspect-[9/16] max-h-72 w-full rounded-xl object-cover"
+              className="aspect-9/16 max-h-72 w-full rounded-xl object-cover"
             />
           )}
 

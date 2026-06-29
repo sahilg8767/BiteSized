@@ -6,6 +6,7 @@ const morgan = require('morgan');
 
 const authRoutes = require('./routes/auth.routes');
 const foodRoutes = require('./routes/food.routes');
+const foodPartnerRoutes = require('./routes/foodPartner.routes');
 const orderRoutes = require('./routes/order.routes');
 const { notFound, errorHandler } = require('./middlewares/error.middleware');
 
@@ -47,6 +48,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/food', foodRoutes);
+app.use('/api/food-partner', foodPartnerRoutes);
 app.use('/api/orders', orderRoutes);
 
 // 404 + central error handler (must be last)
