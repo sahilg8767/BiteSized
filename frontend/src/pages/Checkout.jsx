@@ -14,7 +14,7 @@ const Checkout = () => {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-3 bg-ink text-white">
         <p className="text-white/60">Your cart is empty.</p>
-        <Link to="/" className="text-brand">Browse reels →</Link>
+        <Link to="/reels" className="text-brand">Browse reels →</Link>
       </main>
     );
   }

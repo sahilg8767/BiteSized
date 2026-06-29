@@ -3,6 +3,7 @@ import CreateFood from '../pages/CreateFood'
 import FoodPartnerLogin from '../pages/auth/FoodPartnerLogin'
 import FoodPartnerRegister from '../pages/auth/FoodPartnerRegister'
 import Home from '../pages/Home'
+import Reels from '../pages/Reels'
 import PartnerProfile from '../pages/PartnerProfile'
 import PartnerDashboard from '../pages/PartnerDashboard'
 import Search from '../pages/Search'
@@ -19,6 +20,7 @@ const AppRoutes = () => {
     <Router>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/reels' element={<Reels />} />
         <Route path='/search' element={<Search />} />
         <Route path='/partner/:id' element={<PartnerProfile />} />
 

@@ -40,7 +40,7 @@ const Orders = () => {
         {!loading && !error && orders.length === 0 && (
           <div className="mt-20 text-center text-white/60">
             <p>No orders yet.</p>
-            <Link to="/" className="mt-3 inline-block text-brand">Order something →</Link>
+            <Link to="/reels" className="mt-3 inline-block text-brand">Order something →</Link>
           </div>
         )}
 

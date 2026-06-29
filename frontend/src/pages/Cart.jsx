@@ -17,7 +17,7 @@ const Cart = () => {
         {items.length === 0 ? (
           <div className="mt-20 text-center text-white/60">
             <p>Your cart is empty.</p>
-            <Link to="/" className="mt-3 inline-block text-brand">Browse reels →</Link>
+            <Link to="/reels" className="mt-3 inline-block text-brand">Browse reels →</Link>
           </div>
         ) : (
           <>
