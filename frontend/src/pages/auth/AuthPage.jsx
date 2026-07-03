@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
 
@@ -22,6 +23,7 @@ const AuthPage = ({
   const { setSession } = useAuth();
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [revealed, setRevealed] = useState({}); // password field id -> shown?
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,20 +37,15 @@ const AuthPage = ({
 
     try {
       const { data: result } = await api.post(endpoint, data);
-
-      setStatus({
-        type: "success",
-        message: result.message || "Request completed successfully",
-      });
-      // sync auth context from the response so the app knows who is logged in
+      setStatus({ type: "success", message: result.message || "Success" });
+      // sync auth context so the app immediately knows who is logged in
       setSession(result.role || accountRole, result.user || result.foodPartner || null);
       form.reset();
       navigate(redirectTo);
     } catch (error) {
       setStatus({
         type: "error",
-        message:
-          error.response?.data?.message || "Unable to connect to server",
+        message: error.response?.data?.message || "Unable to connect to server",
       });
     } finally {
       setIsSubmitting(false);
@@ -56,63 +53,106 @@ const AuthPage = ({
   };
 
   return (
-    <main className="auth-page">
-      <section className="auth-card" aria-labelledby={`${accountType}-${mode}-title`}>
-        <p className="auth-kicker">{accountType}</p>
-        <h1 className="auth-title" id={`${accountType}-${mode}-title`}>
-          {title}
-        </h1>
-        <p className="auth-subtitle">{subtitle}</p>
+    <main className="flex min-h-screen items-center justify-center bg-ink px-4 py-10 text-white">
+      <section className="w-full max-w-md rounded-2xl bg-surface p-7 shadow-xl">
+        <Link to="/" className="text-xl font-extrabold tracking-tight">
+          Reel<span className="text-brand">o</span>
+        </Link>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {fields.map((field) => (
-            <div className="auth-field" key={field.id}>
-              <label htmlFor={field.id}>{field.label}</label>
-              <input
-                id={field.id}
-                name={field.name}
-                type={field.type}
-                placeholder={field.placeholder}
-                autoComplete={field.autoComplete}
-                required
-              />
-            </div>
-          ))}
+        <p className="mt-5 text-sm font-medium text-brand">{accountType}</p>
+        <h1 className="mt-1 text-2xl font-bold">{title}</h1>
+        <p className="mt-1 text-sm text-white/60">{subtitle}</p>
+
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          {fields.map((field) => {
+            const isPassword = field.type === "password";
+            const shown = revealed[field.id];
+            return (
+              <label key={field.id} htmlFor={field.id} className="block">
+                <span className="mb-1.5 block text-sm font-medium text-white/80">
+                  {field.label}
+                </span>
+                <div className="relative">
+                  <input
+                    id={field.id}
+                    name={field.name}
+                    type={isPassword ? (shown ? "text" : "password") : field.type}
+                    placeholder={field.placeholder}
+                    autoComplete={field.autoComplete}
+                    required
+                    minLength={isPassword && !isLogin ? 6 : undefined}
+                    className={`input ${isPassword ? "pr-11" : ""}`}
+                  />
+                  {isPassword && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setRevealed((r) => ({ ...r, [field.id]: !r[field.id] }))
+                      }
+                      className="absolute inset-y-0 right-3 flex items-center text-white/40 hover:text-white/70"
+                      aria-label={shown ? "Hide password" : "Show password"}
+                    >
+                      {shown ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  )}
+                </div>
+              </label>
+            );
+          })}
 
           {isLogin && (
-            <div className="auth-row">
-              <label className="auth-checkbox">
-                <input type="checkbox" name="remember" />
-                <span>Remember me</span>
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 text-white/70">
+                <input type="checkbox" name="remember" className="accent-brand" />
+                Remember me
               </label>
-              <a className="auth-link" href="#">
+              <button
+                type="button"
+                className="text-white/40"
+                title="Coming soon"
+                onClick={() =>
+                  setStatus({ type: "error", message: "Password reset is coming soon" })
+                }
+              >
                 Forgot password?
-              </a>
+              </button>
             </div>
           )}
 
           {status.message && (
-            <p className={`auth-status auth-status-${status.type}`}>{status.message}</p>
+            <p
+              className={
+                status.type === "error"
+                  ? "text-sm text-red-400"
+                  : "text-sm text-green-400"
+              }
+            >
+              {status.message}
+            </p>
           )}
 
-          <button className="auth-button" type="submit" disabled={isSubmitting}>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full rounded-full bg-brand py-3 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
+          >
             {isSubmitting ? "Please wait..." : isLogin ? "Login" : "Create account"}
           </button>
         </form>
 
-        <p className="auth-footer">
+        <p className="mt-5 text-center text-sm text-white/60">
           {alternateText}{" "}
-          <a className="auth-link" href={alternateHref}>
+          <Link to={alternateHref} className="font-semibold text-brand">
             {alternateLinkText}
-          </a>
+          </Link>
         </p>
 
         {switchLinks && (
-          <nav className="auth-switch" aria-label="Account type links">
+          <nav className="mt-4 flex flex-wrap justify-center gap-3 border-t border-white/10 pt-4 text-sm">
             {switchLinks.map((link) => (
-              <a className="auth-switch-link" href={link.href} key={link.href}>
+              <Link key={link.href} to={link.href} className="text-white/70 hover:text-white">
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
         )}

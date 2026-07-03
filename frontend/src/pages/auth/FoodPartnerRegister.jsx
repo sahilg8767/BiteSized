@@ -1,4 +1,3 @@
-import "./../../styles/auth.css";
 import AuthPage from "./AuthPage";
 
 const FoodPartnerRegister = () => (
