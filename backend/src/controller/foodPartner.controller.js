@@ -6,19 +6,29 @@ const ApiError = require('../utils/ApiError');
 // GET /api/food-partner  -> list all restaurants with reel counts (for the
 // landing "browse restaurants" section). Only partners who have posted reels.
 const listPartners = asyncHandler(async (req, res) => {
-    // count reels per partner
-    const counts = await foodModel.aggregate([
-        { $group: { _id: '$foodPartner', totalReels: { $sum: 1 } } },
+    // reels per partner + a cover video (newest reel) for a rich card
+    const agg = await foodModel.aggregate([
+        { $sort: { createdAt: -1 } },
+        {
+            $group: {
+                _id: '$foodPartner',
+                totalReels: { $sum: 1 },
+                cover: { $first: '$video' },
+            },
+        },
     ]);
-    const countMap = new Map(counts.map((c) => [String(c._id), c.totalReels]));
+    const metaMap = new Map(agg.map((c) => [String(c._id), c]));
 
     const partners = await foodPartnerModel
-        .find({ _id: { $in: counts.map((c) => c._id) } })
+        .find({ _id: { $in: agg.map((c) => c._id) } })
         .select('name address')
         .lean();
 
     const restaurants = partners
-        .map((p) => ({ ...p, totalReels: countMap.get(String(p._id)) || 0 }))
+        .map((p) => {
+            const meta = metaMap.get(String(p._id)) || {};
+            return { ...p, totalReels: meta.totalReels || 0, cover: meta.cover || null };
+        })
         .sort((a, b) => b.totalReels - a.totalReels);
 
     res.status(200).json({ message: 'Restaurants fetched', restaurants });
