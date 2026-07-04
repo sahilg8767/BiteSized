@@ -46,6 +46,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Update the logged-in user's profile (name / phone / address).
+  const updateProfile = async (updates) => {
+    const { data } = await api.patch("/api/auth/user/profile", updates);
+    setAccount(data.user);
+    return data.user;
+  };
+
+  // Permanently delete the logged-in user's account.
+  const deleteAccount = async () => {
+    await api.delete("/api/auth/user");
+    setRole(null);
+    setAccount(null);
+  };
+
   const value = {
     account,
     role,
@@ -53,6 +67,8 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: Boolean(role),
     setSession,
     logout,
+    updateProfile,
+    deleteAccount,
     refresh: bootstrap,
   };
 

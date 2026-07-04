@@ -1,23 +1,40 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaPlay,
   FaMagnifyingGlass,
   FaCartShopping,
   FaStore,
   FaArrowRight,
+  FaBagShopping,
+  FaBookmark,
+  FaGear,
+  FaLeaf,
+  FaDrumstickBite,
+  FaIceCream,
+  FaMugHot,
 } from "react-icons/fa6";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
-// Landing page: entry point with options (watch reels / search) and a list of
-// restaurants to visit. The reels feed itself now lives at /reels.
+const CATEGORIES = [
+  { key: "veg", label: "Veg", icon: FaLeaf },
+  { key: "non-veg", label: "Non-veg", icon: FaDrumstickBite },
+  { key: "dessert", label: "Dessert", icon: FaIceCream },
+  { key: "beverage", label: "Drinks", icon: FaMugHot },
+];
+
+// Landing / home dashboard. For users: greeting, search, categories, quick
+// actions and restaurants. For partners: a shortcut to their dashboard.
 const Home = () => {
-  const { isAuthenticated, role, logout } = useAuth();
+  const { account, role, logout } = useAuth();
   const { totalItems } = useCart();
+  const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const displayName = role === "food-partner" ? account?.name : account?.fullName;
 
   useEffect(() => {
     api
@@ -28,13 +45,16 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="min-h-screen bg-ink text-white">
-      <div className="mx-auto max-w-2xl px-4 pb-16">
+    <main className="min-h-screen bg-ink pb-24 text-white">
+      <div className="mx-auto max-w-2xl px-4">
         {/* top bar */}
         <header className="flex items-center justify-between py-5">
-          <h1 className="text-2xl font-extrabold tracking-tight">
-            Reel<span className="text-brand">o</span>
-          </h1>
+          <div>
+            <p className="text-xs text-white/50">Hi{displayName ? `, ${displayName}` : ""} 👋</p>
+            <h1 className="text-2xl font-extrabold tracking-tight">
+              Reel<span className="text-brand">o</span>
+            </h1>
+          </div>
           <nav className="flex items-center gap-2 text-sm">
             {role === "food-partner" && (
               <Link to="/partner/dashboard" className="rounded-full bg-white/10 px-3 py-1.5 font-medium">
@@ -42,38 +62,47 @@ const Home = () => {
               </Link>
             )}
             {role === "user" && (
-              <>
-                <Link to="/saved" className="rounded-full bg-white/10 px-3 py-1.5 font-medium">Saved</Link>
-                <Link to="/orders" className="rounded-full bg-white/10 px-3 py-1.5 font-medium">Orders</Link>
-              </>
+              <Link to="/settings" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10" aria-label="Profile">
+                <FaGear />
+              </Link>
             )}
-            {isAuthenticated ? (
+            {role === "food-partner" && (
               <button onClick={logout} className="rounded-full bg-white/10 px-3 py-1.5 font-medium">
                 Logout
               </button>
-            ) : (
-              <Link to="/user/login" className="rounded-full bg-brand px-3 py-1.5 font-semibold">
-                Login
-              </Link>
             )}
           </nav>
         </header>
 
-        {/* hero */}
-        <section className="mt-2">
-          <h2 className="text-3xl font-extrabold leading-tight sm:text-4xl">
-            Discover food through <span className="text-brand">reels</span>.
-          </h2>
-          <p className="mt-2 text-white/60">
-            Watch short videos from restaurants near you, then order in a tap.
-          </p>
+        {/* search (tap to go to search page) */}
+        <button
+          onClick={() => navigate("/search")}
+          className="flex w-full items-center gap-2 rounded-full bg-surface px-4 py-3 text-left text-white/40"
+        >
+          <FaMagnifyingGlass />
+          <span className="text-sm">Search dishes & restaurants</span>
+        </button>
+
+        {/* categories */}
+        <section className="mt-6">
+          <h3 className="mb-3 text-sm font-semibold text-white/70">Browse by category</h3>
+          <div className="grid grid-cols-4 gap-3">
+            {CATEGORIES.map(({ key, label, icon: Icon }) => (
+              <Link key={key} to={`/category/${key}`} className="flex flex-col items-center gap-2">
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface text-xl text-brand">
+                  <Icon />
+                </span>
+                <span className="text-xs text-white/70">{label}</span>
+              </Link>
+            ))}
+          </div>
         </section>
 
-        {/* primary options */}
+        {/* quick actions */}
         <section className="mt-6 grid gap-3 sm:grid-cols-2">
           <Link
             to="/reels"
-            className="group flex flex-col justify-between rounded-2xl bg-linear-to-br from-brand to-brand-dark p-5 shadow-lg shadow-brand/20"
+            className="flex flex-col justify-between rounded-2xl bg-linear-to-br from-brand to-brand-dark p-5 shadow-lg shadow-brand/20"
           >
             <FaPlay className="text-2xl" />
             <div className="mt-8">
@@ -82,27 +111,32 @@ const Home = () => {
             </div>
           </Link>
 
-          <Link
-            to="/search"
-            className="group flex flex-col justify-between rounded-2xl bg-surface p-5"
-          >
-            <FaMagnifyingGlass className="text-2xl text-brand" />
-            <div className="mt-8">
-              <p className="text-lg font-bold">Search</p>
-              <p className="text-sm text-white/60">Find dishes & restaurants</p>
-            </div>
-          </Link>
+          <div className="grid grid-cols-2 gap-3">
+            {role === "user" && (
+              <>
+                <QuickTile to="/orders" icon={<FaBagShopping />} label="Orders" />
+                <QuickTile to="/saved" icon={<FaBookmark />} label="Saved" />
+                <QuickTile to="/cart" icon={<FaCartShopping />} label="Cart" badge={totalItems} />
+                <QuickTile to="/settings" icon={<FaGear />} label="Settings" />
+              </>
+            )}
+            {role === "food-partner" && (
+              <>
+                <QuickTile to="/partner/dashboard" icon={<FaStore />} label="Dashboard" />
+                <QuickTile to="/food/create" icon={<FaPlay />} label="Upload" />
+              </>
+            )}
+          </div>
         </section>
 
         {/* restaurants */}
-        <section className="mt-10">
+        <section className="mt-8">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-lg font-semibold">Restaurants</h3>
             <span className="text-xs text-white/40">{restaurants.length} on Reelo</span>
           </div>
 
           {loading && <p className="text-sm text-white/50">Loading...</p>}
-
           {!loading && restaurants.length === 0 && (
             <p className="text-sm text-white/50">No restaurants yet.</p>
           )}
@@ -136,7 +170,7 @@ const Home = () => {
       {totalItems > 0 && (
         <Link
           to="/cart"
-          className="fixed bottom-6 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-lg shadow-brand/40"
+          className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-lg shadow-brand/40"
           aria-label="View cart"
         >
           <FaCartShopping className="text-lg" />
@@ -148,5 +182,20 @@ const Home = () => {
     </main>
   );
 };
+
+const QuickTile = ({ to, icon, label, badge }) => (
+  <Link
+    to={to}
+    className="relative flex flex-col justify-between rounded-2xl bg-surface p-4 transition hover:bg-white/10"
+  >
+    <span className="text-xl text-brand">{icon}</span>
+    <span className="mt-4 text-sm font-medium">{label}</span>
+    {badge > 0 && (
+      <span className="absolute right-3 top-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1 text-xs font-bold text-white">
+        {badge}
+      </span>
+    )}
+  </Link>
+);
 
 export default Home;

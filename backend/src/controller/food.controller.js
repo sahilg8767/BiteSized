@@ -92,6 +92,22 @@ const getFoodById = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Food fetched successfully', food: annotated });
 });
 
+// Returns a map of foodId -> total quantity ordered, for the given foods.
+async function orderCountsFor(foodIds) {
+    if (foodIds.length === 0) return new Map();
+    try {
+        const orderModel = require('../models/order.model');
+        const rows = await orderModel.aggregate([
+            { $unwind: '$items' },
+            { $match: { 'items.food': { $in: foodIds } } },
+            { $group: { _id: '$items.food', count: { $sum: '$items.quantity' } } },
+        ]);
+        return new Map(rows.map((r) => [String(r._id), r.count]));
+    } catch {
+        return new Map();
+    }
+}
+
 // GET /api/food/partner/:id  -> a partner's reels (public profile feed)
 const getFoodByPartner = asyncHandler(async (req, res) => {
     const foodItems = await foodModel
@@ -101,11 +117,27 @@ const getFoodByPartner = asyncHandler(async (req, res) => {
         .lean();
 
     const annotated = await annotateEngagement(foodItems, req.user?._id);
+    const counts = await orderCountsFor(annotated.map((f) => f._id));
+    const withCounts = annotated.map((f) => ({
+        ...f,
+        orderCount: counts.get(String(f._id)) || 0,
+    }));
 
     res.status(200).json({
         message: 'Partner food items fetched successfully',
-        foodItems: annotated,
+        foodItems: withCounts,
     });
+});
+
+// GET /api/food/category/:category  -> dishes in a category (grid browse)
+const getFoodByCategory = asyncHandler(async (req, res) => {
+    const foodItems = await foodModel
+        .find({ category: req.params.category })
+        .sort({ createdAt: -1 })
+        .populate('foodPartner', 'name address')
+        .lean();
+
+    res.status(200).json({ message: 'Category items fetched', foodItems });
 });
 
 // GET /api/food/partner/mine  -> logged-in partner's own reels
@@ -148,6 +180,7 @@ module.exports = {
     getFoodItems,
     getFoodById,
     getFoodByPartner,
+    getFoodByCategory,
     getMyFood,
     searchFood,
 };

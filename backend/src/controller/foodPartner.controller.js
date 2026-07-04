@@ -35,9 +35,17 @@ const getPartnerProfile = asyncHandler(async (req, res) => {
 
     const totalReels = await foodModel.countDocuments({ foodPartner: partner._id });
 
+    let totalOrders = 0;
+    try {
+        const orderModel = require('../models/order.model');
+        totalOrders = await orderModel.countDocuments({ foodPartner: partner._id });
+    } catch {
+        // order model unavailable — leave at 0
+    }
+
     res.status(200).json({
         message: 'Partner profile fetched',
-        foodPartner: { ...partner, totalReels },
+        foodPartner: { ...partner, totalReels, totalOrders },
     });
 });
 

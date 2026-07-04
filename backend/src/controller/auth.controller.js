@@ -123,6 +123,44 @@ const logoutFoodPartner = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Food partner logged out successfully' });
 });
 
+// PATCH /api/auth/user/profile  (user only) — edit name / phone / address
+const updateUserProfile = asyncHandler(async (req, res) => {
+    const { fullName, phone, address } = req.body;
+    const updates = {};
+    if (typeof fullName === 'string' && fullName.trim()) updates.fullName = fullName.trim();
+    if (typeof phone === 'string') updates.phone = phone.trim();
+    if (typeof address === 'string') updates.address = address.trim();
+
+    const user = await userModel.findByIdAndUpdate(req.user._id, updates, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(200).json({ message: 'Profile updated', user });
+});
+
+// DELETE /api/auth/user  (user only) — delete account + related data
+const deleteUserAccount = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    // best-effort cleanup of the user's engagement + orders
+    const related = ['like.model', 'save.model', 'comment.model', 'order.model'];
+    await Promise.all(
+        related.map(async (m) => {
+            try {
+                const model = require(`../models/${m}`);
+                await model.deleteMany({ user: userId });
+            } catch {
+                // model may not exist / no matching docs — ignore
+            }
+        })
+    );
+
+    await userModel.findByIdAndDelete(userId);
+    clearAuthCookie(res);
+    res.status(200).json({ message: 'Account deleted' });
+});
+
 // ---------- Shared ----------
 
 // Lets the frontend bootstrap auth state on load from the httpOnly cookie.
@@ -152,5 +190,7 @@ module.exports = {
     registerFoodPartner,
     loginFoodPartner,
     logoutFoodPartner,
+    updateUserProfile,
+    deleteUserAccount,
     getMe,
 };

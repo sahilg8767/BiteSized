@@ -40,6 +40,7 @@ router.post('/:id/comments', authUserMiddleware, engagementController.addComment
 // --- public (optional auth annotates isLiked/isSaved) ---
 router.get('/', optionalUserMiddleware, foodController.getFoodItems);
 router.get('/search', foodController.searchFood);
+router.get('/category/:category', foodController.getFoodByCategory);
 router.get('/partner/:id', optionalUserMiddleware, foodController.getFoodByPartner);
 router.get('/:id', optionalUserMiddleware, foodController.getFoodById);
 
