@@ -19,11 +19,22 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
 const CATEGORIES = [
-  { key: "veg", label: "Veg", icon: FaLeaf },
-  { key: "non-veg", label: "Non-veg", icon: FaDrumstickBite },
-  { key: "dessert", label: "Dessert", icon: FaIceCream },
-  { key: "beverage", label: "Drinks", icon: FaMugHot },
+  { key: "veg", label: "Veg", icon: FaLeaf, grad: "from-emerald-400 to-emerald-600" },
+  { key: "non-veg", label: "Non-veg", icon: FaDrumstickBite, grad: "from-rose-400 to-red-600" },
+  { key: "dessert", label: "Dessert", icon: FaIceCream, grad: "from-fuchsia-400 to-purple-600" },
+  { key: "beverage", label: "Drinks", icon: FaMugHot, grad: "from-amber-400 to-orange-600" },
 ];
+
+// deterministic gradient for a restaurant avatar based on its name
+const AVATAR_GRADS = [
+  "from-rose-500 to-orange-500",
+  "from-violet-500 to-fuchsia-500",
+  "from-cyan-500 to-blue-500",
+  "from-emerald-500 to-teal-500",
+  "from-amber-500 to-red-500",
+];
+const gradForName = (name = "") =>
+  AVATAR_GRADS[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % AVATAR_GRADS.length];
 
 // Landing / home dashboard. For users: greeting, search, categories, quick
 // actions and restaurants. For partners: a shortcut to their dashboard.
@@ -87,12 +98,14 @@ const Home = () => {
         <section className="mt-6">
           <h3 className="mb-3 text-sm font-semibold text-white/70">Browse by category</h3>
           <div className="grid grid-cols-4 gap-3">
-            {CATEGORIES.map(({ key, label, icon: Icon }) => (
-              <Link key={key} to={`/category/${key}`} className="flex flex-col items-center gap-2">
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface text-xl text-brand">
+            {CATEGORIES.map(({ key, label, icon: Icon, grad }) => (
+              <Link key={key} to={`/category/${key}`} className="group flex flex-col items-center gap-2">
+                <span
+                  className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br ${grad} text-xl text-white shadow-lg shadow-black/30 transition group-hover:-translate-y-0.5 group-active:scale-95`}
+                >
                   <Icon />
                 </span>
-                <span className="text-xs text-white/70">{label}</span>
+                <span className="text-xs font-medium text-white/70">{label}</span>
               </Link>
             ))}
           </div>
@@ -146,13 +159,15 @@ const Home = () => {
               <li key={r._id}>
                 <Link
                   to={`/partner/${r._id}`}
-                  className="flex items-center gap-3 rounded-xl bg-surface p-3 transition hover:bg-white/10"
+                  className="card flex items-center gap-3 p-3 transition hover:-translate-y-0.5 hover:border-white/20"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand/15 text-brand">
-                    <FaStore />
+                  <span
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br ${gradForName(r.name)} text-lg font-bold text-white shadow-lg shadow-black/30`}
+                  >
+                    {r.name?.[0]?.toUpperCase() || "R"}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">{r.name}</p>
+                    <p className="truncate font-semibold">{r.name}</p>
                     <p className="truncate text-xs text-white/50">
                       {r.totalReels} reel{r.totalReels === 1 ? "" : "s"}
                       {r.address ? ` · ${r.address}` : ""}

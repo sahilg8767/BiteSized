@@ -53,17 +53,40 @@ const AuthPage = ({
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-ink px-4 py-10 text-white">
-      <section className="w-full max-w-md rounded-2xl bg-surface p-7 shadow-xl">
-        <Link to="/" className="text-xl font-extrabold tracking-tight">
-          Reel<span className="text-brand">o</span>
-        </Link>
+    <main className="flex min-h-screen items-stretch justify-center px-4 py-6 text-white sm:py-10">
+      <section className="grid w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-2xl backdrop-blur md:grid-cols-2">
+        {/* branded panel (desktop) */}
+        <aside className="relative hidden flex-col justify-between overflow-hidden bg-linear-to-br from-brand to-brand-dark p-8 md:flex">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/15 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-black/20 blur-2xl" />
+          <Link to="/" className="relative text-2xl font-black tracking-tight">
+            Reel<span className="text-white/80">o</span>
+          </Link>
+          <div className="relative">
+            <h2 className="text-3xl font-black leading-tight">
+              Discover food through reels.
+            </h2>
+            <p className="mt-3 text-sm text-white/85">
+              Watch short videos from restaurants near you, then order in a tap.
+            </p>
+            <div className="mt-6 flex gap-2 text-xs">
+              <span className="rounded-full bg-white/15 px-3 py-1">🎬 Reels feed</span>
+              <span className="rounded-full bg-white/15 px-3 py-1">⭐ Save & order</span>
+            </div>
+          </div>
+        </aside>
 
-        <p className="mt-5 text-sm font-medium text-brand">{accountType}</p>
-        <h1 className="mt-1 text-2xl font-bold">{title}</h1>
-        <p className="mt-1 text-sm text-white/60">{subtitle}</p>
+        {/* form panel */}
+        <div className="p-7 sm:p-9">
+          <Link to="/" className="text-xl font-black tracking-tight md:hidden">
+            Reel<span className="text-brand">o</span>
+          </Link>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          <p className="mt-5 text-sm font-semibold text-brand md:mt-0">{accountType}</p>
+          <h1 className="mt-1 text-2xl font-bold">{title}</h1>
+          <p className="mt-1 text-sm text-white/55">{subtitle}</p>
+
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           {fields.map((field) => {
             const isPassword = field.type === "password";
             const shown = revealed[field.id];
@@ -134,28 +157,29 @@ const AuthPage = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-full bg-brand py-3 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
+            className="btn-brand w-full rounded-full py-3 font-semibold text-white disabled:opacity-60"
           >
             {isSubmitting ? "Please wait..." : isLogin ? "Login" : "Create account"}
           </button>
-        </form>
+          </form>
 
-        <p className="mt-5 text-center text-sm text-white/60">
-          {alternateText}{" "}
-          <Link to={alternateHref} className="font-semibold text-brand">
-            {alternateLinkText}
-          </Link>
-        </p>
+          <p className="mt-5 text-center text-sm text-white/60">
+            {alternateText}{" "}
+            <Link to={alternateHref} className="font-semibold text-brand">
+              {alternateLinkText}
+            </Link>
+          </p>
 
-        {switchLinks && (
-          <nav className="mt-4 flex flex-wrap justify-center gap-3 border-t border-white/10 pt-4 text-sm">
-            {switchLinks.map((link) => (
-              <Link key={link.href} to={link.href} className="text-white/70 hover:text-white">
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        )}
+          {switchLinks && (
+            <nav className="mt-4 flex flex-wrap justify-center gap-3 border-t border-white/10 pt-4 text-sm">
+              {switchLinks.map((link) => (
+                <Link key={link.href} to={link.href} className="text-white/70 hover:text-white">
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )}
+        </div>
       </section>
     </main>
   );
