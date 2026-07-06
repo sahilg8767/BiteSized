@@ -30,40 +30,40 @@ const PartnerProfile = () => {
   }, [id]);
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-6 pb-24 text-white">
+    <main className="min-h-screen bg-ink px-4 py-6 pb-24 text-neutral-900">
       <div className="mx-auto max-w-2xl">
         <div className="mb-5 flex items-center gap-3">
-          <Link to="/" className="text-white/70 hover:text-white">←</Link>
+          <Link to="/" className="text-neutral-600 hover:text-neutral-900">←</Link>
           <h1 className="text-lg font-bold">Restaurant</h1>
         </div>
 
         {/* profile header */}
-        <section className="flex items-center gap-4 rounded-2xl bg-surface p-5">
+        <section className="flex items-center gap-4 rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-5">
           <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-brand/15 text-2xl text-brand">
             <FaStore />
           </span>
           <div className="min-w-0 flex-1">
             <h2 className="truncate text-xl font-bold">{partner?.name || "Restaurant"}</h2>
             {partner?.address && (
-              <p className="truncate text-sm text-white/50">📍 {partner.address}</p>
+              <p className="truncate text-sm text-neutral-500">📍 {partner.address}</p>
             )}
             <div className="mt-2 flex gap-4 text-sm">
-              <span><b>{partner?.totalReels ?? items.length}</b> <span className="text-white/50">reels</span></span>
-              <span><b>{partner?.totalOrders ?? 0}</b> <span className="text-white/50">orders</span></span>
+              <span><b>{partner?.totalReels ?? items.length}</b> <span className="text-neutral-500">reels</span></span>
+              <span><b>{partner?.totalOrders ?? 0}</b> <span className="text-neutral-500">orders</span></span>
             </div>
           </div>
         </section>
 
         {/* menu / reels grid */}
         <h3 className="mb-3 mt-8 text-lg font-semibold">Menu</h3>
-        {loading && <p className="text-sm text-white/50">Loading...</p>}
+        {loading && <p className="text-sm text-neutral-500">Loading...</p>}
         {!loading && items.length === 0 && (
-          <p className="text-sm text-white/50">This restaurant has no reels yet.</p>
+          <p className="text-sm text-neutral-500">This restaurant has no reels yet.</p>
         )}
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {items.map((food) => (
-            <div key={food._id} className="overflow-hidden rounded-xl bg-surface">
+            <div key={food._id} className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
               <video
                 src={food.video}
                 muted
@@ -74,7 +74,7 @@ const PartnerProfile = () => {
               />
               <div className="p-3">
                 <p className="truncate text-sm font-medium">{food.name}</p>
-                <div className="mt-1 flex items-center gap-3 text-xs text-white/50">
+                <div className="mt-1 flex items-center gap-3 text-xs text-neutral-500">
                   <span className="flex items-center gap-1"><FaBagShopping /> {food.orderCount ?? 0}</span>
                   <span className="flex items-center gap-1"><FaHeart /> {food.likeCount ?? 0}</span>
                 </div>

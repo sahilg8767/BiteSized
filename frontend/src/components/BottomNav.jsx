@@ -24,20 +24,20 @@ const BottomNav = () => {
   if (HIDE_ON.includes(pathname)) return null;
 
   return (
-    <nav className="fixed inset-x-0 bottom-4 z-40 mx-auto flex max-w-sm items-center justify-around rounded-full border border-white/10 bg-white/[0.06] px-2 py-2 shadow-2xl shadow-black/40 backdrop-blur-xl">
+    <nav className="fixed inset-x-0 bottom-4 z-40 mx-auto flex max-w-sm items-center justify-around rounded-full border border-black/5 bg-white/90 px-2 py-2 shadow-xl shadow-black/10 backdrop-blur-xl">
       {ITEMS.map(({ to, label, icon: Icon }) => {
         const active = pathname === to;
         return (
           <Link
             key={to}
             to={to}
-            className={`flex flex-1 flex-col items-center gap-0.5 rounded-full py-1.5 text-[10px] font-medium transition ${
-              active ? "text-white" : "text-white/45 hover:text-white/70"
+            className={`flex flex-1 flex-col items-center gap-0.5 rounded-full py-1.5 text-[10px] font-semibold transition ${
+              active ? "text-brand" : "text-neutral-400 hover:text-neutral-600"
             }`}
           >
             <span
               className={`flex h-8 w-8 items-center justify-center rounded-full transition ${
-                active ? "bg-brand shadow-lg shadow-brand/40" : ""
+                active ? "bg-brand text-white shadow-lg shadow-brand/40" : ""
               }`}
             >
               <Icon className="text-base" />

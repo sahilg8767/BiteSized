@@ -34,28 +34,28 @@ const Search = () => {
   }, [q]);
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-6 text-white">
+    <main className="min-h-screen bg-ink px-4 py-6 text-neutral-900">
       <div className="mx-auto max-w-md">
         <div className="mb-5 flex items-center gap-3">
-          <Link to="/" className="text-white/70 hover:text-white">←</Link>
+          <Link to="/" className="text-neutral-600 hover:text-neutral-900">←</Link>
           <h1 className="text-xl font-bold">Search</h1>
         </div>
 
-        <div className="flex items-center gap-2 rounded-full bg-surface px-4 py-3">
-          <FaMagnifyingGlass className="text-white/40" />
+        <div className="flex items-center gap-2 rounded-full bg-white shadow-sm ring-1 ring-black/5 px-4 py-3">
+          <FaMagnifyingGlass className="text-neutral-400" />
           <input
             autoFocus
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search dishes, cuisines..."
-            className="w-full bg-transparent text-sm outline-none placeholder:text-white/40"
+            className="w-full bg-transparent text-sm outline-none placeholder:text-neutral-400"
           />
         </div>
 
-        {loading && <p className="mt-6 text-center text-sm text-white/50">Searching...</p>}
+        {loading && <p className="mt-6 text-center text-sm text-neutral-500">Searching...</p>}
 
         {!loading && searched && results.length === 0 && (
-          <p className="mt-6 text-center text-sm text-white/50">No dishes found for "{q}"</p>
+          <p className="mt-6 text-center text-sm text-neutral-500">No dishes found for "{q}"</p>
         )}
 
         <ul className="mt-4 space-y-3">
@@ -63,12 +63,12 @@ const Search = () => {
             <li key={food._id}>
               <Link
                 to={`/partner/${food.foodPartner?._id || food.foodPartner}`}
-                className="flex items-center gap-3 rounded-xl bg-surface p-3"
+                className="flex items-center gap-3 rounded-xl bg-white shadow-sm ring-1 ring-black/5 p-3"
               >
                 <video src={food.video} muted className="h-16 w-16 shrink-0 rounded-lg object-cover" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{food.name}</p>
-                  <p className="truncate text-xs text-white/50">
+                  <p className="truncate text-xs text-neutral-500">
                     {food.foodPartner?.name} · {food.category}
                   </p>
                 </div>

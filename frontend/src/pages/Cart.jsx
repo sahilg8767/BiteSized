@@ -7,15 +7,15 @@ const Cart = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-6 text-white">
+    <main className="min-h-screen bg-ink px-4 py-6 text-neutral-900">
       <div className="mx-auto max-w-md">
         <div className="mb-6 flex items-center gap-3">
-          <Link to="/" className="text-white/70 hover:text-white">←</Link>
+          <Link to="/" className="text-neutral-600 hover:text-neutral-900">←</Link>
           <h1 className="text-xl font-bold">Your cart</h1>
         </div>
 
         {items.length === 0 ? (
-          <div className="mt-20 text-center text-white/60">
+          <div className="mt-20 text-center text-neutral-500">
             <p>Your cart is empty.</p>
             <Link to="/reels" className="mt-3 inline-block text-brand">Browse reels →</Link>
           </div>
@@ -23,7 +23,7 @@ const Cart = () => {
           <>
             <ul className="space-y-3">
               {items.map(({ food, quantity }) => (
-                <li key={food._id} className="flex items-center gap-3 rounded-xl bg-surface p-3">
+                <li key={food._id} className="flex items-center gap-3 rounded-xl bg-white shadow-sm ring-1 ring-black/5 p-3">
                   <video
                     src={food.video}
                     muted
@@ -31,12 +31,12 @@ const Cart = () => {
                   />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{food.name}</p>
-                    <p className="text-sm text-white/60">₹{food.price}</p>
+                    <p className="text-sm text-neutral-500">₹{food.price}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setQty(food._id, quantity - 1)}
-                      className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10"
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-black/5"
                       aria-label="Decrease"
                     >
                       <FaMinus className="text-xs" />
@@ -44,7 +44,7 @@ const Cart = () => {
                     <span className="w-5 text-center text-sm">{quantity}</span>
                     <button
                       onClick={() => setQty(food._id, quantity + 1)}
-                      className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10"
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-black/5"
                       aria-label="Increase"
                     >
                       <FaPlus className="text-xs" />
@@ -52,7 +52,7 @@ const Cart = () => {
                   </div>
                   <button
                     onClick={() => removeItem(food._id)}
-                    className="ml-1 text-white/50 hover:text-red-400"
+                    className="ml-1 text-neutral-500 hover:text-red-400"
                     aria-label="Remove"
                   >
                     <FaTrash className="text-sm" />
@@ -61,8 +61,8 @@ const Cart = () => {
               ))}
             </ul>
 
-            <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-              <span className="text-white/70">Total</span>
+            <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-4">
+              <span className="text-neutral-600">Total</span>
               <span className="text-xl font-extrabold">₹{totalAmount}</span>
             </div>
 

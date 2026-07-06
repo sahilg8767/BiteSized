@@ -43,7 +43,7 @@ const PartnerDashboard = () => {
   };
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-6 text-white">
+    <main className="min-h-screen bg-ink px-4 py-6 text-neutral-900">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -51,14 +51,14 @@ const PartnerDashboard = () => {
             <h1 className="text-2xl font-bold">Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/" className="rounded-full bg-white/10 px-4 py-2 text-sm">View feed</Link>
-            <Link to="/food/create" className="rounded-full bg-brand px-4 py-2 text-sm font-semibold">
+            <Link to="/" className="rounded-full bg-black/5 px-4 py-2 text-sm">View feed</Link>
+            <Link to="/food/create" className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white">
               + Upload reel
             </Link>
           </div>
         </div>
 
-        {loading && <p className="text-white/60">Loading...</p>}
+        {loading && <p className="text-neutral-500">Loading...</p>}
         {error && <p className="text-red-400">{error}</p>}
 
         {!loading && !error && (
@@ -74,19 +74,19 @@ const PartnerDashboard = () => {
             <section className="mt-8">
               <h2 className="mb-3 text-lg font-semibold">Incoming orders</h2>
               {orders.length === 0 ? (
-                <p className="text-sm text-white/50">No orders yet.</p>
+                <p className="text-sm text-neutral-500">No orders yet.</p>
               ) : (
                 <ul className="space-y-3">
                   {orders.map((order) => (
-                    <li key={order._id} className="rounded-xl bg-surface p-4">
+                    <li key={order._id} className="rounded-xl bg-white shadow-sm ring-1 ring-black/5 p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="font-medium">{order.user?.fullName || "Customer"}</p>
-                          <p className="text-xs text-white/40">{formatDate(order.createdAt)}</p>
-                          <p className="mt-2 text-sm text-white/70">
+                          <p className="text-xs text-neutral-400">{formatDate(order.createdAt)}</p>
+                          <p className="mt-2 text-sm text-neutral-600">
                             {order.items.map((i) => `${i.name} ×${i.quantity}`).join(", ")}
                           </p>
-                          <p className="mt-1 text-xs text-white/50">📍 {order.deliveryAddress}</p>
+                          <p className="mt-1 text-xs text-neutral-500">📍 {order.deliveryAddress}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-bold">₹{order.totalAmount}</p>
@@ -111,15 +111,15 @@ const PartnerDashboard = () => {
             <section className="mt-8">
               <h2 className="mb-3 text-lg font-semibold">My reels</h2>
               {reels.length === 0 ? (
-                <p className="text-sm text-white/50">No reels uploaded yet.</p>
+                <p className="text-sm text-neutral-500">No reels uploaded yet.</p>
               ) : (
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {reels.map((food) => (
-                    <div key={food._id} className="overflow-hidden rounded-lg bg-surface">
+                    <div key={food._id} className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-black/5">
                       <video src={food.video} muted className="aspect-9/16 w-full object-cover" />
                       <div className="p-2">
                         <p className="truncate text-xs font-medium">{food.name}</p>
-                        <p className="text-xs text-white/50">₹{food.price ?? "—"}</p>
+                        <p className="text-xs text-neutral-500">₹{food.price ?? "—"}</p>
                       </div>
                     </div>
                   ))}
@@ -134,9 +134,9 @@ const PartnerDashboard = () => {
 };
 
 const StatCard = ({ label, value }) => (
-  <div className="rounded-xl bg-surface p-4 text-center">
+  <div className="rounded-xl bg-white shadow-sm ring-1 ring-black/5 p-4 text-center">
     <p className="text-2xl font-extrabold">{value}</p>
-    <p className="text-xs text-white/50">{label}</p>
+    <p className="text-xs text-neutral-500">{label}</p>
   </div>
 );
 

@@ -12,8 +12,8 @@ const Checkout = () => {
 
   if (items.length === 0) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-3 bg-ink text-white">
-        <p className="text-white/60">Your cart is empty.</p>
+      <main className="flex min-h-screen flex-col items-center justify-center gap-3 bg-ink text-neutral-900">
+        <p className="text-neutral-500">Your cart is empty.</p>
         <Link to="/reels" className="text-brand">Browse reels →</Link>
       </main>
     );
@@ -42,24 +42,24 @@ const Checkout = () => {
   };
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-6 text-white">
+    <main className="min-h-screen bg-ink px-4 py-6 text-neutral-900">
       <div className="mx-auto max-w-md">
         <div className="mb-6 flex items-center gap-3">
-          <Link to="/cart" className="text-white/70 hover:text-white">←</Link>
+          <Link to="/cart" className="text-neutral-600 hover:text-neutral-900">←</Link>
           <h1 className="text-xl font-bold">Checkout</h1>
         </div>
 
-        <section className="rounded-xl bg-surface p-4">
-          <h2 className="mb-3 text-sm font-semibold text-white/70">Order summary</h2>
+        <section className="rounded-xl bg-white shadow-sm ring-1 ring-black/5 p-4">
+          <h2 className="mb-3 text-sm font-semibold text-neutral-600">Order summary</h2>
           <ul className="space-y-2">
             {items.map(({ food, quantity }) => (
               <li key={food._id} className="flex justify-between text-sm">
-                <span className="text-white/80">{food.name} × {quantity}</span>
+                <span className="text-neutral-700">{food.name} × {quantity}</span>
                 <span>₹{food.price * quantity}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-3 flex justify-between border-t border-white/10 pt-3 font-bold">
+          <div className="mt-3 flex justify-between border-t border-black/10 pt-3 font-bold">
             <span>Total</span>
             <span>₹{totalAmount}</span>
           </div>
@@ -67,7 +67,7 @@ const Checkout = () => {
 
         <form onSubmit={placeOrder} className="mt-5 space-y-4">
           <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-white/80">Delivery address</span>
+            <span className="mb-1.5 block text-sm font-medium text-neutral-700">Delivery address</span>
             <textarea
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -86,7 +86,7 @@ const Checkout = () => {
           >
             {placing ? "Placing order..." : `Place order · ₹${totalAmount}`}
           </button>
-          <p className="text-center text-xs text-white/40">Cash on delivery · demo checkout</p>
+          <p className="text-center text-xs text-neutral-400">Cash on delivery · demo checkout</p>
         </form>
       </div>
     </main>

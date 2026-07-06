@@ -53,14 +53,14 @@ const AuthPage = ({
   };
 
   return (
-    <main className="flex min-h-screen items-stretch justify-center px-4 py-6 text-white sm:py-10">
-      <section className="grid w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-2xl backdrop-blur md:grid-cols-2">
+    <main className="flex min-h-screen items-stretch justify-center px-4 py-6 text-neutral-900 sm:py-10">
+      <section className="grid w-full max-w-4xl overflow-hidden rounded-3xl border border-black/5 bg-white shadow-2xl md:grid-cols-2">
         {/* branded panel (desktop) */}
         <aside className="relative hidden flex-col justify-between overflow-hidden bg-linear-to-br from-brand to-brand-dark p-8 md:flex">
           <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/15 blur-2xl" />
           <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-black/20 blur-2xl" />
           <Link to="/" className="relative text-2xl font-black tracking-tight">
-            Reel<span className="text-white/80">o</span>
+            Reel<span className="text-neutral-700">o</span>
           </Link>
           <div className="relative">
             <h2 className="text-3xl font-black leading-tight">
@@ -83,8 +83,8 @@ const AuthPage = ({
           </Link>
 
           <p className="mt-5 text-sm font-semibold text-brand md:mt-0">{accountType}</p>
-          <h1 className="mt-1 text-2xl font-bold">{title}</h1>
-          <p className="mt-1 text-sm text-white/55">{subtitle}</p>
+          <h1 className="mt-1 text-2xl font-extrabold">{title}</h1>
+          <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           {fields.map((field) => {
@@ -92,7 +92,7 @@ const AuthPage = ({
             const shown = revealed[field.id];
             return (
               <label key={field.id} htmlFor={field.id} className="block">
-                <span className="mb-1.5 block text-sm font-medium text-white/80">
+                <span className="mb-1.5 block text-sm font-medium text-neutral-700">
                   {field.label}
                 </span>
                 <div className="relative">
@@ -112,7 +112,7 @@ const AuthPage = ({
                       onClick={() =>
                         setRevealed((r) => ({ ...r, [field.id]: !r[field.id] }))
                       }
-                      className="absolute inset-y-0 right-3 flex items-center text-white/40 hover:text-white/70"
+                      className="absolute inset-y-0 right-3 flex items-center text-neutral-400 hover:text-neutral-600"
                       aria-label={shown ? "Hide password" : "Show password"}
                     >
                       {shown ? <FaEyeSlash /> : <FaEye />}
@@ -125,13 +125,13 @@ const AuthPage = ({
 
           {isLogin && (
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-white/70">
+              <label className="flex items-center gap-2 text-neutral-600">
                 <input type="checkbox" name="remember" className="accent-brand" />
                 Remember me
               </label>
               <button
                 type="button"
-                className="text-white/40"
+                className="text-neutral-400"
                 title="Coming soon"
                 onClick={() =>
                   setStatus({ type: "error", message: "Password reset is coming soon" })
@@ -163,7 +163,7 @@ const AuthPage = ({
           </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-white/60">
+          <p className="mt-5 text-center text-sm text-neutral-500">
             {alternateText}{" "}
             <Link to={alternateHref} className="font-semibold text-brand">
               {alternateLinkText}
@@ -171,9 +171,9 @@ const AuthPage = ({
           </p>
 
           {switchLinks && (
-            <nav className="mt-4 flex flex-wrap justify-center gap-3 border-t border-white/10 pt-4 text-sm">
+            <nav className="mt-4 flex flex-wrap justify-center gap-3 border-t border-black/10 pt-4 text-sm">
               {switchLinks.map((link) => (
-                <Link key={link.href} to={link.href} className="text-white/70 hover:text-white">
+                <Link key={link.href} to={link.href} className="text-neutral-500 hover:text-neutral-900">
                   {link.label}
                 </Link>
               ))}

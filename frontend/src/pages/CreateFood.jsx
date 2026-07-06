@@ -37,19 +37,19 @@ const CreateFood = () => {
   };
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-8 text-white">
+    <main className="min-h-screen bg-ink px-4 py-8 text-neutral-900">
       <div className="mx-auto max-w-lg">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <p className="text-sm text-brand">Food partner</p>
             <h1 className="text-2xl font-bold">Upload a reel</h1>
           </div>
-          <Link to="/partner/dashboard" className="text-sm text-white/70 hover:text-white">
+          <Link to="/partner/dashboard" className="text-sm text-neutral-600 hover:text-neutral-900">
             ← Dashboard
           </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl bg-surface p-6">
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-6">
           <Field label="Video">
             <input
               name="video"
@@ -57,7 +57,7 @@ const CreateFood = () => {
               accept="video/*"
               required
               onChange={handleVideoChange}
-              className="block w-full text-sm text-white/80 file:mr-3 file:rounded-full file:border-0 file:bg-brand file:px-4 file:py-2 file:text-white"
+              className="block w-full text-sm text-neutral-700 file:mr-3 file:rounded-full file:border-0 file:bg-brand file:px-4 file:py-2 file:text-white"
             />
           </Field>
 
@@ -122,7 +122,7 @@ const CreateFood = () => {
 
 const Field = ({ label, children }) => (
   <label className="block">
-    <span className="mb-1.5 block text-sm font-medium text-white/80">{label}</span>
+    <span className="mb-1.5 block text-sm font-medium text-neutral-700">{label}</span>
     {children}
   </label>
 );

@@ -47,10 +47,10 @@ const Settings = () => {
   };
 
   return (
-    <main className="min-h-screen bg-ink px-4 py-6 pb-24 text-white">
+    <main className="min-h-screen bg-ink px-4 py-6 pb-24 text-neutral-900">
       <div className="mx-auto max-w-md">
         <div className="mb-6 flex items-center gap-3">
-          <Link to="/" className="text-white/70 hover:text-white">←</Link>
+          <Link to="/" className="text-neutral-600 hover:text-neutral-900">←</Link>
           <h1 className="text-xl font-bold">Profile & settings</h1>
         </div>
 
@@ -61,12 +61,12 @@ const Settings = () => {
           </span>
           <div className="min-w-0">
             <p className="truncate font-semibold">{account?.fullName || "User"}</p>
-            <p className="truncate text-sm text-white/50">{account?.email}</p>
+            <p className="truncate text-sm text-neutral-500">{account?.email}</p>
           </div>
         </div>
 
         {/* edit form */}
-        <form onSubmit={save} className="space-y-4 rounded-2xl bg-surface p-5">
+        <form onSubmit={save} className="space-y-4 rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-5">
           <Field label="Full name">
             <input name="fullName" value={form.fullName} onChange={onChange} className="input" required />
           </Field>
@@ -96,7 +96,7 @@ const Settings = () => {
         <div className="mt-6 space-y-3">
           <button
             onClick={handleLogout}
-            className="w-full rounded-full border border-white/15 py-3 font-medium text-white transition hover:bg-white/5"
+            className="w-full rounded-full border border-black/10 py-3 font-medium text-neutral-900 transition hover:bg-black/5"
           >
             Logout
           </button>
@@ -114,7 +114,7 @@ const Settings = () => {
 
 const Field = ({ label, children }) => (
   <label className="block">
-    <span className="mb-1.5 block text-sm font-medium text-white/80">{label}</span>
+    <span className="mb-1.5 block text-sm font-medium text-neutral-700">{label}</span>
     {children}
   </label>
 );

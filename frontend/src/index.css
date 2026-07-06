@@ -1,13 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
-/* Brand theme tokens (Tailwind v4 @theme -> utility classes like bg-brand) */
+/* ---- Bright & vibrant (Swiggy-style) theme ---- */
 @theme {
-  --color-brand: #ff3b5c;
-  --color-brand-dark: #e0244a;
-  --color-ink: #0a0a0f;
-  --color-surface: #15151d;
-  --color-surface-2: #1e1e28;
+  --color-brand: #ff5200;        /* vibrant orange */
+  --color-brand-dark: #e23744;   /* deep red accent */
+  --color-ink: #fff8f3;          /* warm cream page bg */
+  --color-surface: #ffffff;      /* white cards */
+  --color-surface-2: #fff1e8;    /* soft peach tint */
+  --color-line: #f0e7df;         /* hairline borders */
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
@@ -24,94 +25,76 @@ body,
 
 body {
   margin: 0;
-  color: #f4f4f6;
+  color: #1f1d1b;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  /* subtle brand-tinted radial glow on a near-black base */
+  /* warm sunlit gradient */
   background:
-    radial-gradient(1000px 600px at 78% -8%, rgba(255, 59, 92, 0.14), transparent 60%),
-    radial-gradient(900px 600px at -10% 12%, rgba(120, 80, 255, 0.10), transparent 55%),
+    radial-gradient(1100px 620px at 85% -10%, rgba(255, 82, 0, 0.10), transparent 60%),
+    radial-gradient(900px 600px at -5% 8%, rgba(226, 55, 68, 0.08), transparent 55%),
     var(--color-ink);
   background-attachment: fixed;
 }
 
-/* Hide scrollbars on the reels feed while keeping scroll behaviour */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+/* Hide scrollbars (reels feed + horizontal rails) */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Frosted card surface */
+/* White card with soft shadow */
 .card {
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px);
+  border-radius: 1.25rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: 0 6px 20px -12px rgba(60, 40, 20, 0.25);
 }
 
-/* Shared form input styling used across pages */
+/* Form input */
 .input {
   width: 100%;
-  border-radius: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.85rem;
+  border: 1px solid var(--color-line);
+  background: #fff;
   padding: 0.75rem 0.95rem;
-  color: #f4f4f6;
+  color: #1f1d1b;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
-.input::placeholder {
-  color: rgba(255, 255, 255, 0.38);
-}
+.input::placeholder { color: #a89f97; }
 .input:focus {
   border-color: var(--color-brand);
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 0 0 3px rgba(255, 59, 92, 0.18);
+  box-shadow: 0 0 0 3px rgba(255, 82, 0, 0.15);
 }
-.input option {
-  background: var(--color-surface);
-}
+.input option { background: #fff; color: #1f1d1b; }
 
-/* Entrance animation for content sections */
+/* Entrance + skeleton */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up {
-  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+.animate-fade-up { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-/* Shimmer for skeleton loaders */
-@keyframes shimmer {
-  100% { transform: translateX(100%); }
-}
+@keyframes shimmer { 100% { transform: translateX(100%); } }
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
+  background: #f1e9e2;
 }
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
   animation: shimmer 1.4s infinite;
 }
 
-/* Primary pill button */
+/* Primary gradient pill button */
 .btn-brand {
   background: linear-gradient(135deg, var(--color-brand), var(--color-brand-dark));
-  box-shadow: 0 8px 24px -8px rgba(255, 59, 92, 0.6);
+  color: #fff;
+  box-shadow: 0 10px 26px -10px rgba(255, 82, 0, 0.7);
   transition: transform 0.12s, box-shadow 0.15s, opacity 0.15s;
 }
-.btn-brand:hover {
-  box-shadow: 0 10px 30px -8px rgba(255, 59, 92, 0.75);
-}
-.btn-brand:active {
-  transform: scale(0.98);
-}
+.btn-brand:hover { box-shadow: 0 12px 32px -10px rgba(255, 82, 0, 0.85); }
+.btn-brand:active { transform: scale(0.98); }
