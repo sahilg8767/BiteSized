@@ -25,6 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({
         message: 'User registered successfully',
         role: 'user',
+        token,
         user: { _id: user._id, email: user.email, fullName: user.fullName },
     });
 });
@@ -49,6 +50,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(200).json({
         message: 'User logged in successfully',
         role: 'user',
+        token,
         user: { _id: user._id, email: user.email, fullName: user.fullName },
     });
 });
@@ -84,6 +86,7 @@ const registerFoodPartner = asyncHandler(async (req, res) => {
     res.status(201).json({
         message: 'Food partner registered successfully',
         role: 'food-partner',
+        token,
         foodPartner: {
             _id: foodPartner._id,
             name: foodPartner.name,
@@ -114,6 +117,7 @@ const loginFoodPartner = asyncHandler(async (req, res) => {
     res.status(200).json({
         message: 'Food partner logged in successfully',
         role: 'food-partner',
+        token,
         foodPartner: { _id: foodPartner._id, name: foodPartner.name, email: foodPartner.email },
     });
 });

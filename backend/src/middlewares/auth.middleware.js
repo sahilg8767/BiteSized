@@ -7,7 +7,13 @@ const ApiError = require('../utils/ApiError');
 // Reads + verifies the auth cookie and returns the decoded payload, or throws
 // a 401. Token payload shape: { id, role: 'user' | 'food-partner' }.
 function getDecodedToken(req) {
-    const token = req.cookies[COOKIE_NAME];
+    let token = req.cookies[COOKIE_NAME];
+    
+    // Fallback to Bearer token in Authorization header
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
     if (!token) {
         throw new ApiError(401, 'Please login first');
     }
@@ -56,7 +62,10 @@ async function authUserMiddleware(req, res, next) {
 // blocks the request. Used by the public feed to compute isLiked / isSaved.
 async function optionalUserMiddleware(req, res, next) {
     try {
-        const token = req.cookies[COOKIE_NAME];
+        let token = req.cookies[COOKIE_NAME];
+        if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
         if (token) {
             const decoded = verifyToken(token);
             if (decoded.role === 'user') {

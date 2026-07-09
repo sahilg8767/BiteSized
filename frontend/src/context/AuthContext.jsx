@@ -11,11 +11,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const bootstrap = async () => {
+    const token = localStorage.getItem("bitesized_token");
+    if (token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
     try {
       const { data } = await api.get("/api/auth/me");
       setRole(data.role);
       setAccount(data.user || data.foodPartner || null);
     } catch {
+      localStorage.removeItem("bitesized_token");
+      delete api.defaults.headers.common["Authorization"];
       setRole(null);
       setAccount(null);
     } finally {
@@ -28,9 +34,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Called by auth pages after a successful login/register response.
-  const setSession = (nextRole, nextAccount) => {
+  const setSession = (nextRole, nextAccount, token) => {
     setRole(nextRole);
     setAccount(nextAccount);
+    if (token) {
+      localStorage.setItem("bitesized_token", token);
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
   };
 
   const logout = async () => {
@@ -41,6 +51,8 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.get(path);
     } finally {
+      localStorage.removeItem("bitesized_token");
+      delete api.defaults.headers.common["Authorization"];
       setRole(null);
       setAccount(null);
     }

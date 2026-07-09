@@ -39,7 +39,7 @@ const AuthPage = ({
       const { data: result } = await api.post(endpoint, data);
       setStatus({ type: "success", message: result.message || "Success" });
       // sync auth context so the app immediately knows who is logged in
-      setSession(result.role || accountRole, result.user || result.foodPartner || null);
+      setSession(result.role || accountRole, result.user || result.foodPartner || null, result.token);
       form.reset();
       navigate(redirectTo);
     } catch (error) {
@@ -60,7 +60,7 @@ const AuthPage = ({
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-black/15 blur-3xl" />
           <Link to="/" className="relative text-2xl font-black tracking-tight text-white">
-            Reel<span className="text-white/70">o</span>
+            Bite<span className="text-white/70">Sized</span>
           </Link>
           <div className="relative z-10">
             <h2 className="text-3xl font-black leading-tight text-white">
@@ -79,7 +79,7 @@ const AuthPage = ({
         {/* form panel */}
         <div className="p-8 sm:p-10 flex flex-col justify-center">
           <Link to="/" className="text-xl font-black tracking-tight text-brand md:hidden">
-            Reel<span className="text-neutral-700">o</span>
+            Bite<span className="text-neutral-700">Sized</span>
           </Link>
 
           <p className="mt-5 text-xs font-bold text-brand uppercase tracking-wider md:mt-0">{accountType}</p>
