@@ -36,13 +36,9 @@ const ReelCard = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.intersectionRatio >= 0.6) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
+        setIsVisible(entry.isIntersecting);
       },
-      { threshold: [0, 0.6, 1] }
+      { threshold: 0 }
     );
 
     observer.observe(container);

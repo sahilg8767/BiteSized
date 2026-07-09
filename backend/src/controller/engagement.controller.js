@@ -60,9 +60,24 @@ const getSavedFood = asyncHandler(async (req, res) => {
 
     // a reel might have been deleted; drop dangling saves
     const foodItems = saves
-        .map((s) => s.food)
-        .filter(Boolean)
-        .map((f) => ({ ...f, isSaved: true }));
+        .map((s) => {
+            if (!s.food) return null;
+            const foodObj = s.food.toObject ? s.food.toObject() : s.food;
+            return {
+                _id: foodObj._id,
+                name: foodObj.name,
+                video: foodObj.video,
+                description: foodObj.description,
+                price: foodObj.price,
+                category: foodObj.category,
+                foodPartner: foodObj.foodPartner,
+                likeCount: foodObj.likeCount,
+                savesCount: foodObj.savesCount,
+                commentsCount: foodObj.commentsCount,
+                isSaved: true,
+            };
+        })
+        .filter(Boolean);
 
     res.status(200).json({ message: 'Saved reels fetched', foodItems });
 });
