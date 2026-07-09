@@ -1,8 +1,8 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, use, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "./AuthContext";
 
 const CartContext = createContext(null);
-const STORAGE_KEY = "reelo_cart";
+const STORAGE_KEY = "bitesized_cart:v1";
 
 // Cart lives client-side (localStorage) until checkout, where it's sent to the
 // API. Carts are single-restaurant: adding a dish from another partner asks to
@@ -103,7 +103,7 @@ export const CartProvider = ({ children }) => {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => {
-  const ctx = useContext(CartContext);
+  const ctx = use(CartContext);
   if (!ctx) throw new Error("useCart must be used within a CartProvider");
   return ctx;
 };

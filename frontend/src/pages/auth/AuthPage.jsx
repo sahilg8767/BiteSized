@@ -53,38 +53,38 @@ const AuthPage = ({
   };
 
   return (
-    <main className="flex min-h-screen items-stretch justify-center px-4 py-6 text-neutral-900 sm:py-10">
+    <main className="flex min-h-screen items-stretch justify-center px-4 py-8 text-neutral-900 sm:py-12 bg-ink animate-scale-up">
       <section className="grid w-full max-w-4xl overflow-hidden rounded-3xl border border-black/5 bg-white shadow-2xl md:grid-cols-2">
         {/* branded panel (desktop) */}
-        <aside className="relative hidden flex-col justify-between overflow-hidden bg-linear-to-br from-brand to-brand-dark p-8 md:flex">
-          <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/15 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-black/20 blur-2xl" />
-          <Link to="/" className="relative text-2xl font-black tracking-tight">
-            Reel<span className="text-neutral-700">o</span>
+        <aside className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-brand via-brand-dark to-red-650 p-10 md:flex">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-black/15 blur-3xl" />
+          <Link to="/" className="relative text-2xl font-black tracking-tight text-white">
+            Reel<span className="text-white/70">o</span>
           </Link>
-          <div className="relative">
-            <h2 className="text-3xl font-black leading-tight">
+          <div className="relative z-10">
+            <h2 className="text-3xl font-black leading-tight text-white">
               Discover food through reels.
             </h2>
-            <p className="mt-3 text-sm text-white/85">
-              Watch short videos from restaurants near you, then order in a tap.
+            <p className="mt-3 text-sm text-white/80 leading-relaxed">
+              Watch short, appetizing videos from local kitchens near you, and order in a tap.
             </p>
-            <div className="mt-6 flex gap-2 text-xs">
-              <span className="rounded-full bg-white/15 px-3 py-1">🎬 Reels feed</span>
-              <span className="rounded-full bg-white/15 px-3 py-1">⭐ Save & order</span>
+            <div className="mt-8 flex gap-3 text-xs font-bold text-white/95">
+              <span className="rounded-xl bg-white/10 px-3.5 py-2 border border-white/10 backdrop-blur-md">🎬 Interactive Reels</span>
+              <span className="rounded-xl bg-white/10 px-3.5 py-2 border border-white/10 backdrop-blur-md">⚡ Instant Cart</span>
             </div>
           </div>
         </aside>
 
         {/* form panel */}
-        <div className="p-7 sm:p-9">
-          <Link to="/" className="text-xl font-black tracking-tight md:hidden">
-            Reel<span className="text-brand">o</span>
+        <div className="p-8 sm:p-10 flex flex-col justify-center">
+          <Link to="/" className="text-xl font-black tracking-tight text-brand md:hidden">
+            Reel<span className="text-neutral-700">o</span>
           </Link>
 
-          <p className="mt-5 text-sm font-semibold text-brand md:mt-0">{accountType}</p>
-          <h1 className="mt-1 text-2xl font-extrabold">{title}</h1>
-          <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>
+          <p className="mt-5 text-xs font-bold text-brand uppercase tracking-wider md:mt-0">{accountType}</p>
+          <h1 className="mt-1.5 text-2xl font-extrabold text-neutral-900 tracking-tight leading-none">{title}</h1>
+          <p className="mt-2 text-xs font-bold text-neutral-400">{subtitle}</p>
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           {fields.map((field) => {
@@ -92,7 +92,7 @@ const AuthPage = ({
             const shown = revealed[field.id];
             return (
               <label key={field.id} htmlFor={field.id} className="block">
-                <span className="mb-1.5 block text-sm font-medium text-neutral-700">
+                <span className="mb-2 block text-xs font-bold text-neutral-500 uppercase tracking-wider">
                   {field.label}
                 </span>
                 <div className="relative">
@@ -104,7 +104,7 @@ const AuthPage = ({
                     autoComplete={field.autoComplete}
                     required
                     minLength={isPassword && !isLogin ? 6 : undefined}
-                    className={`input ${isPassword ? "pr-11" : ""}`}
+                    className={`input-premium text-sm ${isPassword ? "pr-12" : ""}`}
                   />
                   {isPassword && (
                     <button
@@ -112,10 +112,10 @@ const AuthPage = ({
                       onClick={() =>
                         setRevealed((r) => ({ ...r, [field.id]: !r[field.id] }))
                       }
-                      className="absolute inset-y-0 right-3 flex items-center text-neutral-400 hover:text-neutral-600"
+                      className="absolute inset-y-0 right-4 flex items-center text-neutral-400 hover:text-neutral-600 transition"
                       aria-label={shown ? "Hide password" : "Show password"}
                     >
-                      {shown ? <FaEyeSlash /> : <FaEye />}
+                      {shown ? <FaEyeSlash className="text-base" /> : <FaEye className="text-base" />}
                     </button>
                   )}
                 </div>
@@ -124,14 +124,14 @@ const AuthPage = ({
           })}
 
           {isLogin && (
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-neutral-600">
-                <input type="checkbox" name="remember" className="accent-brand" />
+            <div className="flex items-center justify-between text-xs font-bold text-neutral-500">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="remember" className="accent-brand scale-110" />
                 Remember me
               </label>
               <button
                 type="button"
-                className="text-neutral-400"
+                className="text-neutral-400 hover:text-brand transition cursor-pointer"
                 title="Coming soon"
                 onClick={() =>
                   setStatus({ type: "error", message: "Password reset is coming soon" })
@@ -146,8 +146,8 @@ const AuthPage = ({
             <p
               className={
                 status.type === "error"
-                  ? "text-sm text-red-400"
-                  : "text-sm text-green-400"
+                  ? "text-xs font-bold text-red-500"
+                  : "text-xs font-bold text-green-500 animate-pulse"
               }
             >
               {status.message}
@@ -157,23 +157,23 @@ const AuthPage = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn-brand w-full rounded-full py-3 font-semibold text-white disabled:opacity-60"
+            className="btn-brand-premium w-full py-3.5 mt-2 text-sm cursor-pointer"
           >
-            {isSubmitting ? "Please wait..." : isLogin ? "Login" : "Create account"}
+            {isSubmitting ? "Processing Request..." : isLogin ? "Log In" : "Create Account"}
           </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-neutral-500">
+          <p className="mt-6 text-center text-xs font-bold text-neutral-400">
             {alternateText}{" "}
-            <Link to={alternateHref} className="font-semibold text-brand">
+            <Link to={alternateHref} className="text-brand hover:underline">
               {alternateLinkText}
             </Link>
           </p>
 
           {switchLinks && (
-            <nav className="mt-4 flex flex-wrap justify-center gap-3 border-t border-black/10 pt-4 text-sm">
+            <nav className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 border-t border-black/5 pt-5 text-xs font-bold">
               {switchLinks.map((link) => (
-                <Link key={link.href} to={link.href} className="text-neutral-500 hover:text-neutral-900">
+                <Link key={link.href} to={link.href} className="text-neutral-400 hover:text-brand transition">
                   {link.label}
                 </Link>
               ))}

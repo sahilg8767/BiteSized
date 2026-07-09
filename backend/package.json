@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Reelo - reels-style food delivery API",
+  "description": "BiteSized - reels-style food delivery API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

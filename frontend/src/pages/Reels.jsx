@@ -18,7 +18,7 @@ const Reels = () => {
           className="pointer-events-auto flex items-center gap-1.5 text-xl font-extrabold tracking-tight text-white drop-shadow"
         >
           <FaHouse className="text-base" />
-          Reel<span className="text-brand">o</span>
+          Bite<span className="text-brand">Sized</span>
         </Link>
         <nav className="pointer-events-auto flex items-center gap-2 text-sm">
           <Link
@@ -28,43 +28,12 @@ const Reels = () => {
           >
             <FaMagnifyingGlass className="text-sm" />
           </Link>
-          {role === "food-partner" && (
-            <Link
-              to="/partner/dashboard"
-              className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
-            >
-              Dashboard
-            </Link>
-          )}
           {role === "user" && (
-            <>
-              <Link
-                to="/saved"
-                className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
-              >
-                Saved
-              </Link>
-              <Link
-                to="/orders"
-                className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
-              >
-                Orders
-              </Link>
-            </>
-          )}
-          {isAuthenticated ? (
-            <button
-              onClick={logout}
-              className="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white backdrop-blur"
-            >
-              Logout
-            </button>
-          ) : (
             <Link
-              to="/user/login"
-              className="rounded-full bg-brand px-3 py-1.5 font-semibold text-white"
+              to="/saved"
+              className="rounded-full bg-white/15 px-3.5 py-1.5 font-bold text-xs text-white backdrop-blur transition hover:bg-white/25 active:scale-95"
             >
-              Login
+              Saved
             </Link>
           )}
         </nav>

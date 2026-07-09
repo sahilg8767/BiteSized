@@ -18,24 +18,31 @@ const ReelFeed = ({ fetcher = defaultFetcher, emptyText = "No reels yet", action
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const sentinelRef = useRef(null);
+  const isFetching = useRef(false);
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (isFetching.current || !hasMore) return;
+    isFetching.current = true;
     setLoading(true);
     setError("");
     try {
       const { data } = await fetcher(page);
       const items = data.foodItems || [];
-      setReels((prev) => [...prev, ...items]);
+      setReels((prev) => {
+        const existing = new Set(prev.map((r) => r._id));
+        const filtered = items.filter((item) => !existing.has(item._id));
+        return [...prev, ...filtered];
+      });
       setHasMore(data.hasMore ?? false);
       setPage((p) => p + 1);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load reels");
     } finally {
       setLoading(false);
+      isFetching.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, hasMore, loading, fetcher]);
+  }, [page, hasMore, fetcher]);
 
   // initial load
   useEffect(() => {
@@ -56,6 +63,39 @@ const ReelFeed = ({ fetcher = defaultFetcher, emptyText = "No reels yet", action
     observer.observe(node);
     return () => observer.disconnect();
   }, [loadMore]);
+
+  // Keyboard navigation support (ArrowUp / ArrowDown)
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      // ignore keyboard navigation if typing comments/inputs
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA" || activeEl.isContentEditable)) {
+        return;
+      }
+
+      if (e.key === "ArrowDown" || e.keyCode === 40) {
+        e.preventDefault();
+        container.scrollBy({
+          top: window.innerHeight,
+          behavior: "smooth",
+        });
+      } else if (e.key === "ArrowUp" || e.keyCode === 38) {
+        e.preventDefault();
+        container.scrollBy({
+          top: -window.innerHeight,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, { passive: false });
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // global mute state shared across all reels
   const [muted, setMuted] = useState(true);
@@ -114,7 +154,7 @@ const ReelFeed = ({ fetcher = defaultFetcher, emptyText = "No reels yet", action
   };
 
   return (
-    <div className="mx-auto h-[100dvh] max-w-md overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black">
+    <div ref={containerRef} className="mx-auto h-[100dvh] max-w-md overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black">
       {reels.map((food) => (
         <ReelCard
           key={food._id}

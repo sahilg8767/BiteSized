@@ -52,28 +52,27 @@ const createFood = asyncHandler(async (req, res) => {
     });
 });
 
-// GET /api/food  -> paginated reels feed, newest first
+// GET /api/food  -> paginated reels feed, randomized to mix different restaurants
 const getFoodItems = asyncHandler(async (req, res) => {
-    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-
-    const [foodItems, total] = await Promise.all([
-        foodModel
-            .find({})
-            .sort({ createdAt: -1 })
-            .skip((page - 1) * PAGE_SIZE)
-            .limit(PAGE_SIZE)
-            .populate('foodPartner', 'name address')
-            .lean(),
-        foodModel.countDocuments({}),
-    ]);
+    const foodItems = await foodModel
+        .find({})
+        .populate('foodPartner', 'name address')
+        .lean();
 
     const annotated = await annotateEngagement(foodItems, req.user?._id);
 
+    // Deterministic/Random Fisher-Yates Shuffle
+    const shuffled = [...annotated];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
     res.status(200).json({
         message: 'Food items fetched successfully',
-        page,
-        hasMore: page * PAGE_SIZE < total,
-        foodItems: annotated,
+        page: 1,
+        hasMore: false,
+        foodItems: shuffled,
     });
 });
 
@@ -157,22 +156,68 @@ const getMyFood = asyncHandler(async (req, res) => {
 const searchFood = asyncHandler(async (req, res) => {
     const q = (req.query.q || '').trim();
     if (!q) {
-        return res.status(200).json({ message: 'No query', foodItems: [] });
+        return res.status(200).json({ message: 'No query', foodItems: [], partners: [] });
     }
 
-    const foodItems = await foodModel
-        .find({
-            $or: [
-                { name: { $regex: q, $options: 'i' } },
-                { description: { $regex: q, $options: 'i' } },
-                { category: { $regex: q, $options: 'i' } },
-            ],
-        })
-        .sort({ createdAt: -1 })
-        .populate('foodPartner', 'name address')
-        .lean();
+    const foodPartnerModel = require('../models/food-partner.model');
 
-    res.status(200).json({ message: 'Search results', foodItems });
+    const [foodItems, partners] = await Promise.all([
+        foodModel
+            .find({
+                $or: [
+                    { name: { $regex: q, $options: 'i' } },
+                    { description: { $regex: q, $options: 'i' } },
+                    { category: { $regex: q, $options: 'i' } },
+                ],
+            })
+            .sort({ createdAt: -1 })
+            .populate('foodPartner', 'name address')
+            .lean(),
+        foodPartnerModel
+            .find({
+                $or: [
+                    { name: { $regex: q, $options: 'i' } },
+                    { address: { $regex: q, $options: 'i' } },
+                ],
+            })
+            .lean(),
+    ]);
+
+    res.status(200).json({ message: 'Search results', foodItems, partners });
+});
+
+// DELETE /api/food/:id (food partner only)
+const deleteFoodItem = asyncHandler(async (req, res) => {
+    const foodId = req.params.id;
+    const foodItem = await foodModel.findById(foodId);
+
+    if (!foodItem) {
+        throw new ApiError(404, 'Food item not found');
+    }
+
+    // Verify ownership
+    if (String(foodItem.foodPartner) !== String(req.foodPartner._id)) {
+        throw new ApiError(403, 'You do not own this food item');
+    }
+
+    // Delete item
+    await foodModel.findByIdAndDelete(foodId);
+
+    // Best-effort cleanup of likes, saves, comments
+    try {
+        const likeModel = require('../models/like.model');
+        const saveModel = require('../models/save.model');
+        const commentModel = require('../models/comment.model');
+        await Promise.all([
+            likeModel.deleteMany({ food: foodId }),
+            saveModel.deleteMany({ food: foodId }),
+            commentModel.deleteMany({ food: foodId }),
+        ]);
+    } catch {
+        // ignore
+    }
+
+    res.status(200).json({ message: 'Food item deleted successfully' });
 });
 
 module.exports = {
@@ -183,4 +228,5 @@ module.exports = {
     getFoodByCategory,
     getMyFood,
     searchFood,
+    deleteFoodItem,
 };

@@ -139,6 +139,28 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Profile updated', user });
 });
 
+// PATCH /api/auth/food-partner/profile  (food partner only)
+const updateFoodPartnerProfile = asyncHandler(async (req, res) => {
+    const { name, phone, contactName, address } = req.body;
+    const updates = {};
+
+    if (typeof name === 'string' && name.trim()) updates.name = name.trim();
+    if (typeof phone === 'string') updates.phone = phone.trim();
+    if (typeof contactName === 'string' && contactName.trim()) updates.contactName = contactName.trim();
+    if (typeof address === 'string') updates.address = address.trim();
+
+    const foodPartner = await foodPartnerModel.findByIdAndUpdate(
+        req.foodPartner._id,
+        updates,
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
+    res.status(200).json({ message: 'Profile updated', foodPartner });
+});
+
 // DELETE /api/auth/user  (user only) — delete account + related data
 const deleteUserAccount = asyncHandler(async (req, res) => {
     const userId = req.user._id;
@@ -191,6 +213,7 @@ module.exports = {
     loginFoodPartner,
     logoutFoodPartner,
     updateUserProfile,
+    updateFoodPartnerProfile,
     deleteUserAccount,
     getMe,
 };

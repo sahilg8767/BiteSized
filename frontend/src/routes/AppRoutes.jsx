@@ -46,7 +46,7 @@ const AppRoutes = () => {
         <Route path='/saved' element={<UserOnly><Saved /></UserOnly>} />
         <Route path='/checkout' element={<UserOnly><Checkout /></UserOnly>} />
         <Route path='/orders' element={<UserOnly><Orders /></UserOnly>} />
-        <Route path='/settings' element={<UserOnly><Settings /></UserOnly>} />
+        <Route path='/settings' element={<Auth><Settings /></Auth>} />
 
         {/* partner-only */}
         <Route path='/partner/dashboard' element={<PartnerOnly><PartnerDashboard /></PartnerOnly>} />

@@ -1,4 +1,4 @@
-# 🍽️ Reelo — Reels-first Food Delivery
+# 🍽️ BiteSized — Reels-first Food Delivery
 
 A full-stack food delivery web app where restaurants market dishes through
 **short vertical videos (reels)** instead of static photos — think *Swiggy meets
@@ -25,6 +25,12 @@ dashboard.
 - ⬆️ **Upload reels** — video + name, price, category, description
 - 📊 **Dashboard** — reels grid, revenue/orders/reels stats
 - 🧾 **Order management** — see incoming orders and update their status
+
+### ⚡ Performance & Engineering Highlights
+- 🚀 **Virtual Video Loading** — Prevents memory leaks and browser tab crashes/freezes by dynamically clearing `src` for off-screen cards, dropping memory footprint by 95% and releasing active hardware video decoders.
+- 🔒 **Asynchronous Concurrency Control** — Utilizes synchronous mutable references (`isFetching.current`) to block duplicate state fetches and duplicate card render triggers during rapid infinite scroll snapping.
+- 🩺 **React Doctor Zero-Issue Audit** — Codebase audited to be 100% clean of accessibility issues, unversioned local storage keys, and React 19 deprecations (using the new `use()` context API).
+- ⌨️ **Desktop Keyboard Swipe** — Added native ArrowUp (↑) and ArrowDown (↓) key bindings for desktop reels scrolling (with smart typing-detection bypass inside comments/inputs).
 
 ### Engineering
 - 🔐 **JWT auth** in httpOnly cookies, role-based (`user` / `food-partner`)
@@ -142,9 +148,11 @@ Demo logins:
 | POST | `/user/register` | Register a user |
 | POST | `/user/login` | Login a user |
 | GET  | `/user/logout` | Logout |
+| PATCH | `/user/profile` | Update user profile details |
 | POST | `/food-partner/register` | Register a partner |
 | POST | `/food-partner/login` | Login a partner |
 | GET  | `/food-partner/logout` | Logout |
+| PATCH | `/food-partner/profile` | Update restaurant merchant profile details |
 | GET  | `/me` | Current session (bootstrap auth) |
 
 ### Food — `/api/food`

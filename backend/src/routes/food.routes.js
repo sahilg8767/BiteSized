@@ -31,6 +31,9 @@ router.post(
     foodController.createFood
 );
 
+// delete a reel (food partner only)
+router.delete('/:id', authFoodPartnerMiddleware, foodController.deleteFoodItem);
+
 // --- engagement (user only, except listing comments) ---
 router.post('/:id/like', authUserMiddleware, engagementController.toggleLike);
 router.post('/:id/save', authUserMiddleware, engagementController.toggleSave);
