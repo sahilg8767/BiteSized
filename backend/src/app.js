@@ -12,10 +12,9 @@ const { notFound, errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
 
-// Allow one or more comma-separated client origins (e.g. prod + preview).
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
     .split(',')
-    .map((o) => o.trim());
+    .map((o) => o.trim().replace(/\/$/, ''));
 const isProd = process.env.NODE_ENV === 'production';
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
